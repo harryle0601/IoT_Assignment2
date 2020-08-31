@@ -1,0 +1,387 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Basic styling */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+body {
+  font-family: sans-serif;
+}
+nav {
+  background: #222;
+  padding: 5px 20px;
+}
+ul {
+  list-style-type: none;
+}
+a {
+  color: white;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: none; 
+}
+.logo a:hover {
+  text-decoration: none;
+}
+.menu li {
+  font-size: 16px;
+  padding: 15px 5px;
+  white-space: nowrap;
+}
+
+.menu li a {
+  color: #FFF ;
+  
+}
+
+.menu li a:hover{
+  color: #FEFE96;
+  text-decoration: none;
+}
+
+
+.logo a,
+.toggle a {
+  font-size: 20px;
+}
+.button.secondary {
+  border-bottom: 1px #444 solid;
+}
+
+/* Mobile menu */
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+.toggle {
+  order: 1;
+}
+.item.button {
+  order: 2;
+}
+.item {
+  width: 100%;
+  text-align: center;
+  order: 3;
+  display: none;
+}
+.item.active {
+  display: block;
+}
+
+/* Navbar Toggle */
+.toggle {
+  cursor:pointer;
+}
+.bars {
+  background: #999;
+  display: inline-block;
+  height: 2px;
+  position: relative;
+  transition: background .2s ease-out;
+  width: 18px;
+}
+.bars:before,
+.bars:after {
+  background: #999;
+  content: '';
+  display: block;
+  height: 100%;
+  position: absolute;
+  transition: all .2s ease-out;
+  width: 100%;
+}
+.bars:before {
+  top: 5px;
+}
+.bars:after {
+  top: -5px;
+}
+
+/* Tablet menu */
+@media all and (min-width: 468px) {
+  .menu {
+      justify-content: center;
+  }
+
+  .logo {
+      flex: 1;
+      text-align: left;
+  }
+
+  .item.button {
+      width: auto;
+      order: 1;
+      display: block;
+  }
+  .toggle {
+      order: 2;
+  }
+  .button.secondary {
+      border: 0;
+  }
+  .button a {
+      padding: 7.5px 15px;
+      background: teal;
+      border: 1px #006d6d solid;
+      border-radius:50em;
+  }
+  .button.secondary a {
+      background: transparent;    
+  }
+  .button a:hover {
+      text-decoration: none;
+      transition:all .25s;
+  }
+  .button:not(.secondary) a:hover {
+      background: #006d6d;
+      border-color: #005959;
+  }
+  .button.secondary a:hover {
+      color: #ddd;
+  } 
+}
+
+/* Desktop menu */
+@media all and (min-width: 768px) {
+  .item {
+      display: block;
+      width: auto;
+  }
+  .toggle {
+      display: none;
+  }
+  .logo {
+      order: 0;
+  }
+  .item {
+      order: 1;
+  }
+  .button {
+      order: 2;
+  }
+  .menu li {
+      padding: 15px 10px;
+  }
+  .menu li.button {
+      padding-right: 0;
+  }
+}
+
+.section {
+	position: relative;
+    height: 100vh;
+    background-image:url('https://i.redd.it/ug8vzw2h4c411.jpg');
+}
+
+.section .section-center {
+	position: absolute;
+	top: 50%;
+	left: 0;
+	right: 0;
+	-webkit-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+#booking {
+	font-family: 'Cabin', sans-serif;
+	background-color: #f7f9fa;
+}
+
+.booking-form {
+	position: relative;
+	max-width: 642px;
+	width: 100%;
+	margin: auto;
+	background: #fff;
+	-webkit-box-shadow: 0px 5px 10px -5px rgba(0, 0, 0, 0.3);
+	box-shadow: 0px 5px 10px -5px rgba(0, 0, 0, 0.3);
+}
+
+.booking-form>.booking-bg {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	bottom: 0px;
+	width: 250px;
+	background-image: url('https://www.dictionary.com/e/wp-content/uploads/2019/03/mlem-2-300x201.jpg');
+	background-size: cover;
+	background-position: center;
+}
+
+.booking-form>form {
+	margin-left: 250px;
+	padding: 30px;
+	border: 1px solid #f9fafc;
+	border-left: 0px;
+}
+
+.booking-form .form-header {
+	margin-bottom: 30px;
+}
+
+.booking-form .form-header h2 {
+	margin: 0;
+	margin-bottom: 0px;
+	font-weight: 700;
+	color: #122244;
+	font-size: 35px;
+	text-transform: capitalize;
+}
+
+.booking-form .form-group {
+	position: relative;
+	margin-bottom: 20px;
+}
+
+.booking-form .form-control {
+	background-color: #f7f9fa;
+	height: 40px;
+	padding: 0px 10px;
+	border-radius: 0px;
+	-webkit-transition: 0.2s;
+	transition: 0.2s;
+	color: #122244;
+	border: 0px;
+	font-size: 16px;
+	font-weight: 700;
+	-webkit-box-shadow: inset 0 1px 4px rgba(181, 193, 204, 0.3);
+	box-shadow: inset 0 1px 4px rgba(181, 193, 204, 0.3);
+}
+
+.booking-form .form-control::-webkit-input-placeholder {
+	color: #dde3e8;
+}
+
+.booking-form .form-control:-ms-input-placeholder {
+	color: #dde3e8;
+}
+
+.booking-form .form-control::placeholder {
+	color: #dde3e8;
+}
+
+.booking-form .form-control:focus {
+	-webkit-box-shadow: inset 0 1px 4px rgba(181, 193, 204, 0.3);
+	box-shadow: inset 0 1px 4px rgba(181, 193, 204, 0.3);
+}
+
+.booking-form input[type="date"].form-control:invalid {
+	color: #dde3e8;
+}
+
+.booking-form select.form-control {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
+.booking-form select.form-control+.select-arrow {
+	position: absolute;
+	right: 0px;
+	bottom: 4px;
+	width: 32px;
+	line-height: 32px;
+	height: 32px;
+	text-align: center;
+	pointer-events: none;
+}
+
+.booking-form select.form-control+.select-arrow:after {
+	content: '\279C';
+	display: block;
+	-webkit-transform: rotate(90deg);
+	transform: rotate(90deg);
+	color: #dddee9;
+	font-size: 14px;
+}
+
+.booking-form .form-label {
+	color: #b5c1cc;
+	font-weight: 700;
+	-webkit-transition: 0.2s;
+	transition: 0.2s;
+	text-transform: uppercase;
+	line-height: 24px;
+	height: 24px;
+	font-size: 14px;
+	z-index: 1;
+}
+
+.booking-form .form-btn {
+	margin-top: 10px;
+}
+
+.booking-form .submit-btn {
+	color: #fff;
+	background-color: #6499ff;
+	font-weight: 700;
+	padding: 13px 35px;
+	font-size: 16px;
+	border: none;
+	width: 100%;
+}
+
+@media only screen and (max-width: 480px) {
+	.booking-form>.booking-bg {
+		display: none;
+	}
+	.booking-form>form {
+		margin-left: 0px;
+	}
+}
+.login-div {
+  max-width: 430px;
+  padding: 35px;
+  border: 1px solid rgb(187, 180, 180);
+  border-radius: 8px;
+}
+.logo {
+  /* background-image: url("kitty.jpg"); */
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: 0 auto;
+}
