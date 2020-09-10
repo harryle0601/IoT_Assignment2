@@ -1,21 +1,25 @@
 import React, { Component } from 'react';
-import {BrowserRouter, Switch,Route} from 'react-router-dom'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import './App.css';
-import Header from './components/layout/Header';
-import Homepage from './components/pages/Hompage';
-import Login from './components/pages/Login';
+import SignIn from './pages/SignIn';
+import SignUp from './pages/SignUp';
+import BookCar from './pages/BookCar';
+import SearchCar from './pages/SearchCars';
 
-class App extends Component{
-render(){
-return(
-<BrowserRouter>
-<div className="App">
-<Header/>
-<Switch>
-<Route exact path="/" component={Homepage}/>
-<Route path="/login" component={Login}/>
-</Switch>
-</div>
-</BrowserRouter>
-);}}
+class App extends Component {
+    render() {
+        return (
+            <BrowserRouter>
+                <div className="App">
+                    <Switch>
+                        <Route exact path="/" component={SignIn} />
+                        <Route exact path="/signUp" component={SignUp} />
+                        <Route path="/cars/search" component={SearchCar} />
+                        <Route path="/cars/book" component={BookCar} />
+                    </Switch>
+                </div>
+            </BrowserRouter>
+        );
+    }
+}
 export default App;

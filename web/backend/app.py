@@ -1,7 +1,7 @@
 # Required imports
 import os
 from flask import Flask, request, jsonify
-from firebase_admin import credentials, firestore, initialize_app
+from firebase_admin import credentials, firestore, initialize_app, auth
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -10,10 +10,14 @@ app = Flask(__name__)
 cred = credentials.Certificate('key.json')
 default_app = initialize_app(cred)
 db = firestore.client()
+
+auth.set_custom_user_claims('pW4ymnAZJFSXPneGrheTRjvt9hw2', {'admin': True})
+auth.set_custom_user_claims('Zysrn5S61wgXsHUKqa8LyTPMj6A3', {'engineer': True})
+
 cars_collection = db.collection('cars')
-users_collection = db.collection('cars')
+users_collection = db.collection('users')
 issues_collection = db.collection('issues')
-rental_collection = db.collection('rental')
+
 
 @app.route('/car', methods=['POST'])
 def add_new_car():
@@ -26,10 +30,11 @@ def add_new_car():
         cars_collection.add(request.json)
         return jsonify({"success": True}), 200
     except Exception as e:
-        return f"An Error Occured: {e}"
+        return f"An Error Occurred: {e}"
 
-@app.route('/cars', methods=['GET'])
-def get_car_list():
+
+@app.route('/cars/{car_id}', methods=['GET'])
+def get_car():
     """
         read() : Fetches documents from Firestore collection as JSON.
         todo : Return document that matches query ID.
@@ -37,43 +42,12 @@ def get_car_list():
     """
     try:
         # Check if ID was passed to URL query
-        car_id = request.args.get('id')
-        if car_id:
-            car = cars_collection.document(car_id).get()
-            return jsonify(car.to_dict()), 200
-        else:
-            car_list = [doc.to_dict() for doc in cars_collection.stream()]
-            return jsonify(car_list), 200
+        car_id = request.args.get('car_id')
+        car = cars_collection.document(car_id).get()
+        return jsonify(car.to_dict()), 200
     except Exception as e:
-        return f"An Error Occured: {e}"
+        return f"An Error Occurred: {e}"
 
-@app.route('/update', methods=['PUT'])
-def update():
-    """
-        update() : Update document in Firestore collection with request body.
-        Ensure you pass a custom ID as part of json body in post request,
-        e.g. json={'id': '1', 'title': 'Write a blog post today'}
-    """
-    try:
-        id = request.json['id']
-        cars_collection.document(id).update(request.json)
-        return jsonify({"success": True}), 200
-    except Exception as e:
-        return f"An Error Occured: {e}"
 
-@app.route('/delete', methods=['DELETE'])
-def delete():
-    """
-        delete() : Delete a document from Firestore collection.
-    """
-    try:
-        # Check for ID in URL query
-        car_id = request.args.get('id')
-        cars_collection.document(car_id).delete()
-        return jsonify({"success": True}), 200
-    except Exception as e:
-        return f"An Error Occured: {e}"
-
-port = int(os.environ.get('PORT', 6799))
 if __name__ == '__main__':
-    app.run(threaded=True, port=port)
+    app.run(threaded=True)
