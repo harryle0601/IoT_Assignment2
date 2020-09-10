@@ -4,7 +4,7 @@ import './App.css';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import BookCar from './pages/BookCar';
-import SearchCar from './pages/SearchCars';
+// import SearchCar from './pages/SearchCars';
 
 class App extends Component {
     render() {
@@ -14,7 +14,7 @@ class App extends Component {
                     <Switch>
                         <Route exact path="/" component={SignIn} />
                         <Route exact path="/signUp" component={SignUp} />
-                        <Route path="/cars/search" component={SearchCar} />
+                        {/* <Route path="/cars/search" component={SearchCar} /> */}
                         <Route path="/cars/book" component={BookCar} />
                     </Switch>
                 </div>

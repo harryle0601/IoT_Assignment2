@@ -1,30 +1,17 @@
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
-import classNames from "classnames";
-import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import React from 'react';
+import classNames from "classnames";
+import { withStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import { auth } from "../firebase";
-import firebase from "firebase";
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { signInEmailPassword, signInGmail } from '../store/actions/authActions'
+import { Redirect } from 'react-router-dom'
 
-// Configure FirebaseUI.
-const uiConfig = {
-    // Popup signin flow rather than redirect flow.
-    signInFlow: 'popup',
-    // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
-    signInSuccessUrl: '/cars',
-    // We will display Google and Facebook as auth providers.
-    signInOptions: [
-        firebase.auth.EmailAuthProvider.PROVIDER_ID,
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        firebase.auth.FacebookAuthProvider.PROVIDER_ID
-    ]
-};
-
-const useStyles = makeStyles(theme => ({
+const useStyles = theme => ({
     card: {
         overflow: "visible"
     },
@@ -61,36 +48,105 @@ const useStyles = makeStyles(theme => ({
         display: "flex",
         flexDirection: "column"
     }
-}));
+});
 
-const Signin = () => {
-    const classes = useStyles();
-    return (
-        <div className={classNames(classes.session, classes.background)}>
-            <div className={classes.content}>
-                <div className={classes.wrapper}>
-                    <Card>
-                        <CardContent>
-                        <div className={classNames(classes.logo, `text-xs-center pb-xs`)}>
-                            <img src={`${process.env.PUBLIC_URL}/static/images/logo-dark.svg`} alt="" className="block" />
-                            <Typography variant="caption">Sign in with your app id to continue.</Typography>
-                        </div>
-                        <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
-                        <div className="pt-1 text-md-center">
-                                    <Link to="/forgot">
-                                        <Button>Forgot password?</Button>
-                                    </Link>&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <Link to="/signup">
-                                        <Button>Create new account.</Button>
-                                    </Link>
-                                </div>
-                        </CardContent>
-                    </Card>
+class SignIn extends Component {
+    state = {
+        email: '',
+        password: ''
+    }
+    handleChange = (e) => {
+        this.setState({
+            [e.target.id]: e.target.value
+        })
+    }
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.signIn(this.state)
+    }
+    handleSubmitEmail = (e) => {
+        e.preventDefault();
+        this.props.signInGmail()
+    }
+    render() {
+        // const classes = useStyles();
+        const { auth, classes } = this.props;
+        if (auth.uid) return <Redirect to='/cars/book' />
+        return (
+            <div className={classNames(classes.session, classes.background)}>
+                <div className={classes.content}>
+                    <div className={classes.wrapper}>
+                        <Card>
+                            <CardContent>
+                                <form onSubmit={this.handleSubmit}>
+                                    <div className={classNames(classes.logo, `text-xs-center pb-xs`)} >
+                                        <img src={`${process.env.PUBLIC_URL}/static/images/logo-dark.svg`} alt="" className="block" />
+                                        <Typography variant="caption">Sign in with your app id to continue.</Typography>
+                                    </div>
+                                    <TextField
+                                        id="username"
+                                        label="Username"
+                                        className={classes.textField}
+                                        fullWidth
+                                        margin="normal"
+                                        onChange={this.handleChange.bind(this)}
+                                    />
+                                    <TextField
+                                        id="password"
+                                        label="Password"
+                                        className={classes.textField}
+                                        type="password"
+                                        fullWidth
+                                        margin="normal"
+                                        onChange={this.handleChange.bind(this)}
+                                    />
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        fullWidth
+                                        type="submit"
+                                    >
+                                        Login
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        fullWidth
+                                        type="submit"
+                                        onClick={this.handleSubmitEmail.bind(this)}
+                                    >
+                                        Sign in with Google account
+                                    </Button>
+                                    <div className="pt-1 text-md-center">
+                                        <Link to="/forgot">
+                                            <Button>Forgot password?</Button>
+                                        </Link>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <Link to="/signUp">
+                                            <Button>Create new account.</Button>
+                                        </Link>
+                                    </div>
+                                </form>
+                            </CardContent>
+                        </Card>
+                    </div>
                 </div>
-            </div>
-        </div>
-    );
-};
+            </div>)
+    }
+}
 
-export default Signin;
+const mapStateToProps = (state) => {
+    return {
+        authError: state.auth.authError,
+        auth: state.firebase.auth
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signIn: (creds) => dispatch(signInEmailPassword(creds)),
+        signInGmail: () => dispatch(signInGmail())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(useStyles)(SignIn));
 

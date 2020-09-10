@@ -1,8 +1,6 @@
 import React from "react";
 import TextField from '@material-ui/core/TextField';
-import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
 
 const useStyles = theme => ({
     container: {
@@ -24,24 +22,23 @@ class CalendarView extends React.Component {
         super();
         this.state = {
             bookDate: "",
-            bookDay: 1
+            bookDura: ""
         }
     }
 
     handleInputChange(event) {
-        const target = event.target;
-        const value = target.value;
-        const name = target.id;
-
         this.setState({
-            [name]: value
-        });
-        this.props.onSelectedDate(event, this.state.bookDate, this.state.bookDay)
-        console.log("name ", name, " value ", value);
+            [event.target.id]:  event.target.value
+        }); 
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState !== this.state) {
+            this.props.onSelectedDate(this.state.bookDate, this.state.bookDura)
+        }
     }
     
     render() {
-        const car = this.props.car;
         const { classes } = this.props;
         return (
             <form className={classes.container} noValidate>
@@ -58,9 +55,9 @@ class CalendarView extends React.Component {
                     }}
                 />
                 <TextField
-                    id="bookDay"
-                    label="Number of booking day"
-                    value={this.state.age}
+                    id="bookDura"
+                    label="Number of booking days"
+                    value={this.state.bookDura}
                     onChange={this.handleInputChange.bind(this)}
                     type="number"
                     defaultValue="1"

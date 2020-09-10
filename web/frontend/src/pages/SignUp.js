@@ -1,14 +1,15 @@
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import { Link } from "react-router-dom";
-import React from "react";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
-import { auth, db } from "../firebase";
 import { red } from "@material-ui/core/colors";
+import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { signUp } from '../store/actions/authActions'
 
 const useStyles = theme => ({
     card: {
@@ -49,72 +50,30 @@ const useStyles = theme => ({
     }
 });
 
-
-class SignUp extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            email: "",
-            password: "",
-            cpassword: "",
-            errMessage: ""
-        }
+class SignUp extends Component {
+    state = {
+        email: '',
+        password: '',
+        cpassword: "",
+        errMessage: ""
     }
-
     validatePassword() {
-        if (this.state.password !== this.state.cpassword) 
+        if (this.state.password !== this.state.cpassword)
             return false
         return true
     }
-
-    createNewUser() {
-        var errMessage = ""
-        auth.createUserWithEmailAndPassword(this.state.email, this.state.password).then(function success(userData){
-            console.log("created new user");
-            var uid = userData.user.uid; // The UID of recently created user on firebase
-            console.log(uid)
-            var email = userData.user.email;
-            console.log(email)
-            var emailVerified = userData.user.emailVerified;
-            var photoURL = userData.user.photoURL;
-            var user = {
-                Email: email,
-                Role: "User"
-            }
-            db.collection("users").doc(uid).set(user)
-        }).catch(function (error) {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            console.log("error code " + errorCode);
-            console.log("error message " + errorMessage);
-            if (errorCode == "auth/email-already-in-use") {
-                errMessage = errorMessage
-            }
-        });
+    handleChange = (e) => {
         this.setState({
-            errMessage: errMessage
-        });
+            [e.target.id]: e.target.value
+        })
     }
-
-    submitHandler = (event) => {
-        console.log("Start creating user")
-        if (this.validatePassword()) this.createNewUser()
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.signUp(this.state);
     }
-
-    handleInputChange(event) {
-        const target = event.target;
-        const value = target.value;
-        const name = target.id;
-
-        this.setState({
-            [name]: value
-        });
-        console.log("name ", name, " value ", value);
-    }
-
     render() {
-        const { classes } = this.props;
+        const { auth, authError, classes } = this.props;
+        if (auth.uid) return <Redirect to='/cars/book' />
         return (
             <div className={classNames(classes.session, classes.background)}>
                 <div className={classes.content}>
@@ -135,7 +94,7 @@ class SignUp extends React.Component {
                                         fullWidth
                                         margin="normal"
                                         value={this.state.email}
-                                        onChange={this.handleInputChange.bind(this)}
+                                        onChange={this.handleChange.bind(this)}
                                     />
                                     <TextField
                                         id="password"
@@ -145,7 +104,7 @@ class SignUp extends React.Component {
                                         fullWidth
                                         margin="normal"
                                         value={this.state.password}
-                                        onChange={this.handleInputChange.bind(this)}
+                                        onChange={this.handleChange.bind(this)}
                                     />
                                     <TextField
                                         id="cpassword"
@@ -155,42 +114,47 @@ class SignUp extends React.Component {
                                         fullWidth
                                         margin="normal"
                                         value={this.state.cpassword}
-                                        onChange={this.handleInputChange.bind(this)}
+                                        onChange={this.handleChange.bind(this)}
                                     />
                                     <div className="invalid" style={{
                                         display: ((this.state.password === this.state.cpassword) ? "none" : "block"),
                                         color: red
                                     }}>Confirm Password Must Matched</div>
                                     <div className="invalid" style={{
-                                        display: ((this.state.errMessage === "") ? "none" : "block"),
+                                        display: ((authError === "") ? "none" : "block"),
                                         color: red
-                                    }}>{this.state.errMessage}</div>
+                                    }}>{authError}</div>
                                     <Button
                                         variant="contained"
                                         color="primary"
                                         fullWidth
                                         type="submit"
-                                        onClick={this.submitHandler}
+                                        onClick={this.handleSubmit}
                                         disabled={this.state.password !== this.state.cpassword}
                                     >
                                         Create your account
                                     </Button>
-                                    <div className="pt-1 text-xs-center">
-                                        <Link to="/forgot">
-                                            <Button>Forgot password?</Button>
-                                        </Link>&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <Link to="/">
-                                            <Button>Access your account.</Button>
-                                        </Link>
-                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
                     </div>
                 </div>
             </div>
-        );
+        )
     }
 }
 
-export default withStyles(useStyles)(SignUp);
+const mapStateToProps = (state) => {
+    return {
+        auth: state.firebase.auth,
+        authError: state.auth.authError
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signUp: (creds) => dispatch(signUp(creds))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(useStyles)(SignUp))
