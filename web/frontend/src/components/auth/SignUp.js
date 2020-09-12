@@ -1,0 +1,158 @@
+import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { signUp } from '../store/actions/authActions'
+import "./style.css"
+import FormSignUp from './FormSignUp'
+import Confirm from './Confirmation'
+import Success from './Success'
+import { uploadToStorage } from '../store/actions/uploadAction'
+
+const initialState = {
+    step: 1,
+    progress: 0,
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    rePassword: '',
+    avatarImg: null,
+
+    firstNameError: '',
+    lastNameError: '',
+    emailError: '',
+    passwordError: '',
+    rePasswordError: '',
+    avatarImgError: '',
+    logging: false, authError: '',
+}
+
+class SignUp extends Component {
+    state = initialState;
+    nextStep = () => {
+        const { step } = this.state;
+        this.setState({
+            step: step + 1
+        });
+    }
+    prevStep = () => {
+        const { step } = this.state;
+        this.setState({
+            step: step - 1
+        });
+    }
+    handleChange = input => e => {
+        e.preventDefault();
+        this.setState({ [input]: e.target.value })
+    }
+    handleSubmit = (e) => {
+        e.preventDefault();
+        const userInfo = {
+            ...this.state,
+            avatar: this.props.avatar
+        }
+        console.log(userInfo)
+        this.props.signUp(userInfo);
+    }
+    handleChangeAvatar = (e) => {
+        if (e.target.files[0]) {
+            const image = e.target.files[0];
+            this.setState({ avatarImg: image });
+        }
+    }
+    handleUploadAvatar = (e) => {
+        e.preventDefault();
+        const { avatarImg } = this.state;
+        if (avatarImg !== undefined && avatarImg !== null) {
+            // need a image and a path
+            const file = {
+                image: avatarImg,
+                path: '/images/avatar/'
+            }
+            // new upload
+            this.props.uploadToStorage(file)
+        }
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.progress !== this.props.progress) {
+            console.log('loading work')
+            this.setState({ progress: this.props.progress })
+        }
+        if (prevProps.authError !== this.props.authError) {
+            if (this.props.authError !== undefined || this.props.authError !== null) {
+                this.setState({ logging: false })
+            }
+        }
+    }
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.progress !== prevState.progress) {
+            return { progress: nextProps.progress };
+        }
+        else return null;
+    }
+
+    render() {
+        console.log(this.state)
+        const { step, firstName, lastName, email, password, rePassword, image, url, progress } = this.state;
+        const { auth, authError, currentUser } = this.props;
+        const values = { firstName, lastName, email, password, rePassword, image, url, progress }
+        const { firstNameError, lastNameError, emailError, passwordError, rePasswordError, avatarImgError  } = this.state
+        const error = { firstNameError, lastNameError, emailError, passwordError, rePasswordError, avatarImgError }
+
+        if (auth.uid) return <Redirect to='/user'/>
+
+        switch (step) {
+            case 1:
+                return (
+                    <FormSignUp
+                        nextStep={this.nextStep}
+                        handleChange={this.handleChange}
+                        handleChangeAvatar={this.handleChangeAvatar}
+                        handleUploadAvatar={this.handleUploadAvatar}
+                        values={values}
+                        error={error}
+                    />
+                )
+            case 2:
+                return (
+                    <Confirm
+                        nextStep={this.nextStep}
+                        prevStep={this.prevStep}
+                        handleChange={this.handleChange}
+                        handleSubmit={this.handleSubmit}
+                        values={values}
+                        error={error}
+                    />
+                )
+            case 3:
+                return (
+                    <Success
+                        prevStep={this.prevStep}
+                    />
+                )
+        }
+    }
+}
+
+const mapStateToProps = (state, ownProps) => {
+    const url = state.uploadReducer.url ? state.uploadReducer.url : null
+    if (url !== undefined && url !== null) 
+        if (url.path === '/images/avatar/') 
+            sessionStorage.setItem("avatar", url.url);
+    
+    return {
+        auth: state.firebase.auth,
+        authError: state.auth.authError,
+        progress: state.uploadReducer.progress,
+        avatar: sessionStorage.getItem("avatar")
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signUp: (creds) => dispatch(signUp(creds)),
+        uploadToStorage: (file) => dispatch(uploadToStorage(file))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp)

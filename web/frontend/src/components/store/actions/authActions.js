@@ -1,7 +1,7 @@
-export const signInEmailPassword = (credentials) => {
-    return (dispatch, getState, { getFirebase }) => {
-        const firebase = getFirebase();
+import firebase from 'firebase/app';
 
+export const signInEmailPassword = (credentials) => {
+    return (dispatch, getState) => {
         firebase.auth().signInWithEmailAndPassword(
             credentials.email,
             credentials.password
@@ -15,22 +15,21 @@ export const signInEmailPassword = (credentials) => {
 }
 
 export const signInGmail = () => {
-    return (dispatch, getState, { getFirebase }) => {
-        const firebase = getFirebase();
-
-        firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(() => {
+    return (dispatch, getState) => {
+        firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(resp => {
+            return firebase.firestore().collection('users').doc(resp.user.uid).set({
+                Email: resp.user.email,
+                Role: "User",
+            });
             dispatch({ type: 'LOGIN_SUCCESS' });
         }).catch((err) => {
             dispatch({ type: 'LOGIN_ERROR', err });
         });
-
     }
 }
 
 export const signOut = () => {
     return (dispatch, getState, { getFirebase }) => {
-        const firebase = getFirebase();
-
         firebase.auth().signOut().then(() => {
             dispatch({ type: 'SIGNOUT_SUCCESS' })
         });
@@ -38,15 +37,12 @@ export const signOut = () => {
 }
 
 export const signUp = (newUser) => {
-    return (dispatch, getState, { getFirebase, getFirestore }) => {
-        const firebase = getFirebase();
-        const firestore = getFirestore();
-
+    return (dispatch, getState) => {
         firebase.auth().createUserWithEmailAndPassword(
             newUser.email,
             newUser.password
         ).then(resp => {
-            return firestore.collection('users').doc(resp.user.uid).set({
+            return firebase.firestore().collection('users').doc(resp.user.uid).set({
                 Email: newUser.email,
                 Role: newUser.role,
             });
@@ -56,4 +52,16 @@ export const signUp = (newUser) => {
             dispatch({ type: 'SIGNUP_ERROR', err });
         });
     }
+}
+
+export const fogotPassword = (email) => {
+    return (dispatch, getState) => {
+        firebase.auth().sendPasswordResetEmail(email).then(() => {
+            dispatch({ type: 'SENT_PASSWORD_EMAIL' });
+        }).catch(function (error) {
+            // An error happened.}
+            dispatch({ type: 'SENT_PASSWORD_EMAIL_ERROR' });
+        })
+    }
+
 }

@@ -1,27 +1,70 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import "./index.css";
-import AppRoute from "./AppRoute";
-import * as serviceWorker from "./serviceWorker";
-import { createStore, applyMiddleware, compose } from "redux";
-import rootReducer from "./store/reducers/rootReducer";
-import { Provider } from "react-redux";
-import thunk from "redux-thunk";
-import { reduxFirestore, getFirestore } from "redux-firestore";
-import { reactReduxFirebase, getFirebase } from "react-redux-firebase";
-import fbConfig from "./firebase";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import * as serviceWorker from './serviceWorker';
+import { Provider, useSelector } from 'react-redux'
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/firestore'
+import 'firebase/storage';
+import { createStore, compose, applyMiddleware } from 'redux'
+import { ReactReduxFirebaseProvider, getFirebase, isLoaded } from 'react-redux-firebase'
+import { createFirestoreInstance, getFirestore } from 'redux-firestore'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import ColorLinearProgress from './components/layout/ColorLinearProgress'
+import thunk from 'redux-thunk';
+import rootReducer from './components/store/reducers/rootReducer'
+import ErrorHandler from './components/utils/ErrorHandler';
 
+const fbConfig = {
+    apiKey: "AIzaSyB6_pMrQeJZUadK72Dy1ljfgYDu8jrf4jM",
+    authDomain: "iotassignment2-d4c67.firebaseapp.com",
+    databaseURL: "https://iotassignment2-d4c67.firebaseio.com",
+    projectId: "iotassignment2-d4c67",
+    storageBucket: "iotassignment2-d4c67.appspot.com",
+    messagingSenderId: "421326197012",
+    appId: "1:421326197012:web:8f8b8308d7f5a8e1ebb201",
+    measurementId: "G-DQS4MS2J7W"
+};
+const rrfConfig = {
+    userProfile: 'users',
+    useFirestoreForProfile: true
+}
+const middlewares = [
+    thunk.withExtraArgument(getFirebase, getFirestore)
+]
+
+firebase.initializeApp(fbConfig)
+firebase.firestore()
+
+const storageRef = firebase.storage();
+export default (storageRef)
+
+function AuthIsLoaded({ children }) {
+    const auth = useSelector(state => state.firebase.auth)
+    if (!isLoaded(auth)) return <div style={{ textAlign: "center", paddingTop:"20px" }}><h1 style={{ fontFamily: 'Muli', marginBottom: "5%" }}>Loading...</h1><ColorLinearProgress style={{ padding: "0.3%" }} /></div>;
+    return children
+}
+
+const initialState = window && window.__INITIAL_STATE__
 const store = createStore(
-    rootReducer,
+    rootReducer, initialState,
     compose(
-        applyMiddleware(thunk.withExtraArgument({ getFirebase, getFirestore })),
-        reduxFirestore(fbConfig, {userProfile: 'users', useFirestoreForProfile: true}),
-        reactReduxFirebase(fbConfig)
-    )
-);
+        applyMiddleware(...middlewares))
+)
 
-ReactDOM.render(<Provider store={store}><AppRoute /></Provider>, document.getElementById('root'));
+const rrfProps = {
+    firebase,
+    config: rrfConfig,
+    dispatch: store.dispatch,
+    createFirestoreInstance
+}
+
+ReactDOM.render(<Provider store={store}>
+    <ReactReduxFirebaseProvider {...rrfProps}><div id='bckgrd' className='bckgrd'>
+        <AuthIsLoaded><MuiThemeProvider><ErrorHandler><App /></ErrorHandler></MuiThemeProvider></AuthIsLoaded>
+        </div></ReactReduxFirebaseProvider>
+</Provider>, document.getElementById('root'));
+
 serviceWorker.register();
-
-
-

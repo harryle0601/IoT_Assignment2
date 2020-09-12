@@ -10,7 +10,6 @@ const authReducer = (state = initState, action) => {
                 ...state,
                 authError: 'Login failed'
             }
-
         case 'LOGIN_SUCCESS':
             console.log('login success');
             return {
@@ -28,12 +27,24 @@ const authReducer = (state = initState, action) => {
                 ...state,
                 authError: null
             }
-
         case 'SIGNUP_ERROR':
             console.log('signup error')
             return {
                 ...state,
                 authError: action.err.message
+            }
+            
+        case 'SENT_PASSWORD_EMAIL':
+            console.log('email success');
+            return {
+                ...state,
+                authError: null
+            }
+        case 'SENT_PASSWORD_EMAIL_ERROR':
+            console.log('email failed');
+            return {
+                ...state,
+                authError: 'Send fogot password email failed'
             }
 
         default:

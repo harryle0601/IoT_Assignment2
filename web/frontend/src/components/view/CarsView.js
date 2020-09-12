@@ -1,5 +1,6 @@
 import React from "react";
 import Grid from '@material-ui/core/Grid';
+import LoadingView from './loadingView';
 import Car from '../card/Car'
 
 class CarsView extends React.Component {
@@ -24,6 +25,11 @@ class CarsView extends React.Component {
     }
 
     render() {
+        console.log("load cars", this.props)
+        if (this.props.cars === undefined) {
+            console.log("not loaded yet")
+            return(<LoadingView/>)
+        }
         return (
             <div>
                 <Grid container spacing={1}>
