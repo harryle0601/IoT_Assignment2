@@ -6,7 +6,7 @@ import TextInfoContent from '@mui-treasury/components/content/textInfo';
 import { useFourThreeCardMediaStyles } from '@mui-treasury/styles/cardMedia/fourThree';
 import { useN04TextInfoContentStyles } from '@mui-treasury/styles/textInfoContent/n04';
 import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
-import BookThisCarDialog from '../view/bookingDialog'
+import BookThisCarDialog from '../dialog/bookingDialog'
 
 const useStyles = makeStyles(() => ({
     card: {

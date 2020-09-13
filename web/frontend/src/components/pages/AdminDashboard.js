@@ -10,6 +10,7 @@ import { returnCar } from "../store/actions/rentalActions"
 import SearchCar from "../view/searchCar"
 import RentalHistory from "../view/rentalHistory"
 import IssueHistory from "../view/issuesHistory"
+import UsersList from "../view/usersList"
 
 const useStyles = theme => ({
     search: {
@@ -100,14 +101,14 @@ class AdminDashboard extends React.Component {
     }
 
     render() {
-        const { auth, classes, cars, currentUser, rental, issues } = this.props;
+        const { auth, classes, cars, currentUser, rental, issues, users } = this.props;
         const { tab } = this.state
         if (!auth.uid) return <Redirect to='/signin' />
         else if (currentUser) {
             if (currentUser.Role === "Engineer") return <Redirect to='/engineer' />
             if (currentUser.Role === "Manager") return <Redirect to='/manager' />
         }
-        if (cars && rental && issues) {
+        if (cars && rental && issues && users) {
             return (
                 <div>
                     <Tabs
@@ -120,6 +121,7 @@ class AdminDashboard extends React.Component {
                         <Tab label="Search Car" {...a11yProps(0)} />
                         <Tab label="Rental History" {...a11yProps(1)} />
                         <Tab label="Issues History" {...a11yProps(2)} />
+                        <Tab label="Users Informations" {...a11yProps(3)} />
                     </Tabs>
                     <div>
                         <TabPanel value={tab} index={0}>
@@ -130,6 +132,9 @@ class AdminDashboard extends React.Component {
                         </TabPanel>
                         <TabPanel value={tab} index={2}>
                             {(props) => <IssueHistory {...props} issues={issues} currentUser={currentUser} auth={auth}/>}
+                        </TabPanel>
+                        <TabPanel value={tab} index={3}>
+                            {(props) => <UsersList {...props} users={users} currentUser={currentUser} auth={auth}/>}
                         </TabPanel>
                     </div>
                 </div>
@@ -164,7 +169,7 @@ export default compose(
         if (!props.auth.uid) return [];
         else return [
             { collection: 'cars' },
-            { collection: 'rental', queryParams:['orderByChild=RentDate'] },
+            { collection: 'rental' },
             { collection: 'issues' },
             { collection: 'users' }
         ]
