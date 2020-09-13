@@ -5,6 +5,7 @@ import authReducer from './authReducer'
 import carReducer from './carReducer'
 import uploadReducer from './uploadReducer'
 import rentalReducer from './rentalReducer'
+import issueReducer from './issueReducer'
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
     firebase: firebaseReducer,
     carReducer,
     rentalReducer,
+    issueReducer,
     uploadReducer
 });
 

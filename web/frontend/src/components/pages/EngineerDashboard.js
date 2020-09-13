@@ -3,12 +3,10 @@ import { firestoreConnect } from 'react-redux-firebase'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import React from "react";
-import { Tabs, Tab } from '@material-ui/core';
 import { fade, withStyles } from '@material-ui/core/styles'
-import RentalHistory from "../view/rentalHistory"
-import { TabPanel, a11yProps } from '../layout/Tabs'
+import * as FilterFunctions from "../utils/FilterFunctions"
 import { returnCar } from "../store/actions/rentalActions"
-import SearchCar from "../view/searchCar"
+import IssueHistory from "../view/issuesHistory"
 
 const useStyles = theme => ({
     search: {
@@ -81,53 +79,20 @@ const useStyles = theme => ({
     }
 });
 
-class SeachCar extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            tab: 0
-        }
-    }
-
-    handleTabChange = (e, value) => {
-        this.setState({ tab: value });
-    }
-
-    handleRemove = (e, rental) => {
-        var d = new Date().getTime();
-        this.props.returnCar(rental, d)
-    }
+class EngineerDashboard extends React.Component {
 
     render() {
-        const { auth, classes, cars, currentUser, rental } = this.props;
-        console.log("props of sc", this.props)
-        const { tab } = this.state
+        const { auth, cars, currentUser, issues } = this.props;
         if (!auth.uid) return <Redirect to='/signin' />
         else if (currentUser) {
             if (currentUser.Role === "Admin") return <Redirect to='/admin' />
-            if (currentUser.Role === "Engineer") return <Redirect to='/engineer' />
             if (currentUser.Role === "Manager") return <Redirect to='/manager' />
         }
-        if (cars && rental) {
+        if (issues) {
+            var filters = FilterFunctions.getFilterTags(cars)
             return (
                 <div>
-                    <Tabs
-                        orientation="horizontal"
-                        value={tab}
-                        onChange={this.handleTabChange}
-                        className={classes.tabs}
-                        justify="center"
-                    >
-                        <Tab label="Search Car" {...a11yProps(0)} />
-                        <Tab label="Rental History" {...a11yProps(1)} />
-                    </Tabs>
-                    <div>
-                        <TabPanel value={tab} index={0}>
-                            {(props) => <SearchCar {...props} cars={cars} currentUser={currentUser} auth={auth}/>}</TabPanel>
-                        <TabPanel value={tab} index={1}>
-                            {(props) => <RentalHistory {...props} rental={rental} currentUser={currentUser} auth={auth}/>}
-                        </TabPanel>
-                    </div>
+                    {(props) => <IssueHistory {...props} issues={issues} currentUser={currentUser} auth={auth}/>}
                 </div>
             );
         }
@@ -136,19 +101,18 @@ class SeachCar extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const users = state.firestore.ordered.currentUser
-    const currentUser = users ? users[0] : null
+    const cu = state.firestore.ordered.currentUser
+    const currentUser = cu ? cu[0] : null
     return {
         currentUser: currentUser,
         auth: state.firebase.auth,
-        cars: state.firestore.ordered.cars,
-        rental: state.firestore.ordered.rental
+        issues: state.firestore.ordered.issues
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        returnCar: (rental, returnDate) => dispatch(returnCar(rental, returnDate))
+        editCar: (rental, returnDate) => dispatch(returnCar(rental, returnDate))
     }
 }
 
@@ -157,8 +121,7 @@ export default compose(
     firestoreConnect((props) => {
         if (!props.auth.uid) return [];
         else return [
-            { collection: 'cars' },
-            { collection: 'rental', where:[['UID', '==',  props.auth.uid]],queryParams:['orderByChild=RentDate'] }
+            { collection: 'issues' }
         ]
     }),
-)(withStyles(useStyles)(SeachCar))
+)(withStyles(useStyles)(EngineerDashboard))

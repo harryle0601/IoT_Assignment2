@@ -1,50 +1,15 @@
-import { Redirect, NavLink } from 'react-router-dom'
-import { firestoreConnect, populate } from 'react-redux-firebase'
+import { Redirect } from 'react-router-dom'
+import { firestoreConnect } from 'react-redux-firebase'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import React from "react";
-import { Grid, FormControlLabel, Tabs, Tab, Checkbox, Slider, TextField, 
-    Card, CardContent, CardHeader, Table, TableHead, TableBody, TableRow, TableCell,
-    Button, Input, Dialog, DialogTitle, DialogContent, DialogActions,
-    Container, Typography, Box, TableContainer, IconButton} from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import { Tabs, Tab } from '@material-ui/core';
 import { fade, withStyles } from '@material-ui/core/styles'
-import CarCard from "../card/UserCarCard";
-import ClearIcon from '@material-ui/icons/Clear'
-import * as FilterFunctions from "../utils/FilterFunctions"
 import { TabPanel, a11yProps } from '../layout/Tabs'
 import { returnCar } from "../store/actions/rentalActions"
 import SearchCar from "../view/searchCar"
-
-const PrettoSlider = withStyles({
-    root: {
-        color: '#52af77',
-        height: 8,
-    },
-    thumb: {
-        height: 24,
-        width: 24,
-        backgroundColor: '#fff',
-        border: '2px solid currentColor',
-        marginTop: -8,
-        marginLeft: -12,
-        '&:focus, &:hover, &$active': {
-            boxShadow: 'inherit',
-        },
-    },
-    active: {},
-    valueLabel: {
-        left: 'calc(-50% + 4px)',
-    },
-    track: {
-        height: 8,
-        borderRadius: 4,
-    },
-    rail: {
-        height: 8,
-        borderRadius: 4,
-    },
-})(Slider);
+import RentalHistory from "../view/rentalHistory"
+import IssueHistory from "../view/issuesHistory"
 
 const useStyles = theme => ({
     search: {
@@ -135,15 +100,14 @@ class AdminDashboard extends React.Component {
     }
 
     render() {
-        const { auth, classes, cars, currentUser, rental } = this.props;
+        const { auth, classes, cars, currentUser, rental, issues } = this.props;
         const { tab } = this.state
         if (!auth.uid) return <Redirect to='/signin' />
         else if (currentUser) {
             if (currentUser.Role === "Engineer") return <Redirect to='/engineer' />
             if (currentUser.Role === "Manager") return <Redirect to='/manager' />
         }
-        if (cars && rental) {
-            var filters = FilterFunctions.getFilterTags(cars)
+        if (cars && rental && issues) {
             return (
                 <div>
                     <Tabs
@@ -155,72 +119,17 @@ class AdminDashboard extends React.Component {
                     >
                         <Tab label="Search Car" {...a11yProps(0)} />
                         <Tab label="Rental History" {...a11yProps(1)} />
+                        <Tab label="Issues History" {...a11yProps(2)} />
                     </Tabs>
                     <div>
                         <TabPanel value={tab} index={0}>
-                            {(props) => <SearchCar {...props}/>}
+                            {(props) => <SearchCar {...props} cars={cars} currentUser={currentUser} auth={auth}/>}
                         </TabPanel>
                         <TabPanel value={tab} index={1}>
-                            <Container>
-                                <div style={{ maxHeight: '80vh' }}>
-                                    <Typography variant='h2'>Cart</Typography>
-                                    <Card className={classes.card} style={{
-                                        display: 'flex',
-                                        marginTop: "1%",
-                                        overflow: 'initial',
-                                        background: '#ffffff',
-                                        borderRadius: 16,
-                                        height: '100%'
-                                    }}>
-                                        <CardContent className={classes.content} style={{
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            padding: "2%",
-                                            width: '100%'
-                                        }}>
-                                            <div>
-                                                <TableContainer className={classes.container} style={{
-                                                    maxHeight: '55vh',
-                                                    marginBottom: '2%'
-                                                }}>
-                                                    <Table stickyHeader aria-label="sticky table">
-                                                        <TableHead>
-                                                            <TableRow>
-                                                                <TableCell align='left' style={{ minWidth: 400 }}><Typography><Box fontWeight='Bold'>Car</Box></Typography></TableCell>
-                                                                <TableCell align='left'><Box fontWeight='Bold'>Booked Date</Box></TableCell>
-                                                                <TableCell align='left'><Box fontWeight='Bold'>Unit Price</Box></TableCell>
-                                                                <TableCell align='right'></TableCell>
-                                                            </TableRow>
-                                                        </TableHead>
-                                                        <TableBody>
-                                                            {rental.map((r, key) => {
-                                                                console.log("rentdate", r.RentDate)
-                                                                return (
-                                                                    <TableRow hover role="checkbox" tabIndex={-1} key={r.id}>
-                                                                        <TableCell align='left'>
-                                                                            <Grid container direction="row" justify="flex-start" alignItems="center" >
-                                                                                <img style={{ minWidth: '50px', width: '8vh', height: '8vh', objectFit: 'cover' }} src={r.Car.Image} />
-                                                                                <Grid style={{ marginLeft: 20 }}>
-                                                                                    <Typography variant='h6'><Box>{r.Car.Brand + " " + r.Car.Model}</Box></Typography>
-                                                                                    <Typography variant='subtitle2'><Box>{r.Car.Seats + " seats " + r.Car.Color}</Box></Typography>
-                                                                                </Grid>
-                                                                            </Grid>
-                                                                        </TableCell>
-                                                                        <TableCell align='left'>{new Date(r.RentDate.seconds*1000).toLocaleDateString()}</TableCell>
-                                                                        <TableCell align='left'>$ {(r.Car.Price).toLocaleString()}</TableCell>
-                                                                        <TableCell>{(r.ReturnDate) ? "Book Canceled" : <IconButton onClick={e => this.handleRemove(e, r)}><ClearIcon/>Cancel</IconButton>}</TableCell>
-                                                                    </TableRow>
-                                                                );
-                                                            })}
-                                                        </TableBody>
-                                                    </Table>
-                                                </TableContainer>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                </div>
-                            </Container>
-                        
+                            {(props) => <RentalHistory {...props} rental={rental} currentUser={currentUser} auth={auth}/>}
+                        </TabPanel>
+                        <TabPanel value={tab} index={2}>
+                            {(props) => <IssueHistory {...props} issues={issues} currentUser={currentUser} auth={auth}/>}
                         </TabPanel>
                     </div>
                 </div>
@@ -231,13 +140,15 @@ class AdminDashboard extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const users = state.firestore.ordered.currentUser
-    const currentUser = users ? users[0] : null
+    const cu = state.firestore.ordered.currentUser
+    const currentUser = cu ? cu[0] : null
     return {
         currentUser: currentUser,
         auth: state.firebase.auth,
         cars: state.firestore.ordered.cars,
-        rental: state.firestore.ordered.rental
+        rental: state.firestore.ordered.rental,
+        issues: state.firestore.ordered.issues,
+        users: state.firestore.ordered.users
     }
 }
 
@@ -254,6 +165,7 @@ export default compose(
         else return [
             { collection: 'cars' },
             { collection: 'rental', queryParams:['orderByChild=RentDate'] },
+            { collection: 'issues' },
             { collection: 'users' }
         ]
     }),

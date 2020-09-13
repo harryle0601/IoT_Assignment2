@@ -164,9 +164,10 @@ class SearchCar extends React.Component {
     }
 
     render() {
-        const { auth, classes, cars, currentUser, rental } = this.props;
-        const { tab, available, brand, minSeats, maxSeats, color, minPrice, maxPrice } = this.state
-        if (cars) {
+        const { auth, classes, cars } = this.props;
+        const { available, brand, minSeats, maxSeats, color, minPrice, maxPrice } = this.state
+        console.log("car car car", cars)
+        if (cars && auth.uid) {
             var filters = FilterFunctions.getFilterTags(cars)
             return (
                 <Grid container spacing={1}>
@@ -261,24 +262,4 @@ class SearchCar extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    const users = state.firestore.ordered.currentUser
-    const currentUser = users ? users[0] : null
-    return {
-        currentUser: currentUser,
-        auth: state.firebase.auth,
-        cars: state.firestore.ordered.cars
-    }
-}
-
-export default compose(
-    connect(mapStateToProps, null),
-    firestoreConnect((props) => {
-        if (!props.auth.uid) return [];
-        else return [
-            { collection: 'cars' }
-        ]
-    }),
-)(withStyles(useStyles)(SearchCar))
-
-// export default withStyles(useStyles)(SearchCar)
+export default withStyles(useStyles)(SearchCar)

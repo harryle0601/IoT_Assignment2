@@ -4,8 +4,8 @@ import { Grid, Card, CardContent, Table, TableHead, TableBody, TableRow, TableCe
     Container, Typography, Box, TableContainer, IconButton} from '@material-ui/core';
 import { fade, withStyles } from '@material-ui/core/styles'
 import EditIcon from '@material-ui/icons/Edit'
-import ClearIcon from '@material-ui/icons/Clear'
-import { returnCar, editRental } from "../store/actions/rentalActions"
+import CheckIcon from '@material-ui/icons/Check'
+import { editIssue } from "../store/actions/issueActions"
 
 const useStyles = theme => ({
     search: {
@@ -78,24 +78,24 @@ const useStyles = theme => ({
     }
 });
 
-class RentalHistory extends React.Component {
+class IssueHistory extends React.Component {
     handleTabChange = (e, value) => {
         this.setState({ tab: value });
     }
 
-    handleRemove = (e, rental) => {
-        var d = new Date().getTime();
-        this.props.returnCar(rental, d)
+    handleResolve = (e, rental) => {
+        rental['Resolved'] = true
+        this.props.editIssue(rental)
     }
 
     handleEdit = (e, rental) => {
-        var d = new Date().getTime();
-        this.props.returnCar(rental, d)
+        // var d = new Date().getTime();
+        // this.props.returnCar(rental, d)
     }
 
     render() {
-        const { auth, classes, currentUser, rental } = this.props;
-        if (rental && auth.uid) {
+        const { auth, classes, currentUser, issues } = this.props;
+        if (issues && auth.uid) {
             return (
                 <Container>
                 <div style={{ maxHeight: '150vh' }}>
@@ -121,17 +121,15 @@ class RentalHistory extends React.Component {
                                     <Table stickyHeader aria-label="sticky table">
                                         <TableHead>
                                             <TableRow>
-                                                <TableCell align='left' style={{ minWidth: 400 }}><Typography><Box fontWeight='Bold'>Car</Box></Typography></TableCell>
-                                                {currentUser.Role === "Admin" ? <TableCell align='left'><Box fontWeight='Bold'>User Email</Box></TableCell> : null}
-                                                <TableCell align='left'><Box fontWeight='Bold'>Booked Date</Box></TableCell>
-                                                {currentUser.Role === "Admin" ? <TableCell align='left'><Box fontWeight='Bold'>Status</Box></TableCell> 
-                                                : <TableCell align='left'><Box fontWeight='Bold'>Unit Price</Box></TableCell>}
-                                                <TableCell align='right'></TableCell>
+                                                <TableCell align='left' style={{ minWidth: 180 }}><Typography><Box fontWeight='Bold'>Car</Box></Typography></TableCell>
+                                                <TableCell align='left' style={{ minWidth: 220 }} ><Box fontWeight='Bold'>Description</Box></TableCell>
+                                                <TableCell align='left'><Box fontWeight='Bold'>Report Date</Box></TableCell>
+                                                <TableCell align='left'><Box fontWeight='Bold'>Status</Box></TableCell>
+                                                {currentUser.Role === "Admin" ? <TableCell align='right'></TableCell> : null}
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {rental.map((r, key) => {
-                                                console.log("rentdate", r.RentDate)
+                                            {issues.map((r, key) => {
                                                 return (
                                                     <TableRow hover role="checkbox" tabIndex={-1} key={r.id}>
                                                         <TableCell align='left'>
@@ -143,13 +141,12 @@ class RentalHistory extends React.Component {
                                                                 </Grid>
                                                             </Grid>
                                                         </TableCell>
-                                                        {currentUser.Role === "Admin" ? <TableCell align='left'><Box fontWeight='Bold'>{r.User.Email}</Box></TableCell> : null}
-                                                        <TableCell align='left'>{r.RentDate.toDate().toLocaleString()}</TableCell>
-                                                        {currentUser.Role === "Admin" ? <TableCell align='left'><Box fontWeight='Bold'>{r.ReturnDate ? "Returned" : "Not Returned"}</Box></TableCell> 
-                                                        : <TableCell align='left'>$ {(r.Car.Price).toLocaleString()}</TableCell>}
+                                                        <TableCell align='left'><Box>{r.Summary}</Box></TableCell>
+                                                        <TableCell align='left'>{r.ReportDate.toDate().toLocaleString()}</TableCell>
+                                                        <TableCell align='left'>{r.Resolved ? "Resolved" : "Not Resolve"} </TableCell>
                                                         {currentUser.Role === "Admin" 
                                                         ? <TableCell><IconButton onClick={e => this.handleEdit(e, r)}><EditIcon/>Edit</IconButton></TableCell>
-                                                        : <TableCell>{r.ReturnDate ? "Book Canceled" : <IconButton onClick={e => this.handleRemove(e, r)}><ClearIcon/>Cancel</IconButton>}</TableCell>}
+                                                        : <TableCell>{r.Resolved ? "Book Canceled" : <IconButton onClick={e => this.handleResolved(e, r)}><CheckIcon/>Cancel</IconButton>}</TableCell>}
                                                     </TableRow>
                                                 );
                                             })}
@@ -169,9 +166,8 @@ class RentalHistory extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        returnCar: (rental, returnDate) => dispatch(returnCar(rental, returnDate)),
-        editRental: (rental) => dispatch(editRental(rental))
+        resolveIssue: (issue) => dispatch(editIssue(issue))
     }
 }
 
-export default connect(null, mapDispatchToProps)(withStyles(useStyles)(RentalHistory))
+export default connect(null, mapDispatchToProps)(withStyles(useStyles)(IssueHistory))

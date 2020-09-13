@@ -9,8 +9,8 @@ import SignIn from './components/auth/SignIn';
 import SignUp from './components/auth/SignUp';
 import UserDashboard from './components/pages/UserDashboard';
 import AdminDashboard from './components/pages/AdminDashboard';
-import ViewStatistic from './components/pages/ViewStats';
-import ViewIssues from './components/pages/ViewIssues';
+import EngineerDashboard from './components/pages/EngineerDashboard';
+import ManagerDashboard from './components/pages/ViewStats';
 
 class App extends Component {
     render() {
@@ -25,9 +25,9 @@ class App extends Component {
                             <Route exact path="/signin" component={SignIn} />
                             <Route exact path="/signup" component={SignUp} />
                             <Route path='/user' component={(props) => <UserDashboard {...props}/>} />
-                            <Route path='/engineer' component={(props) => <ViewIssues {...props} currentUser={currentUser} issuesList={issuesList}/>} />
-                            <Route path='/admin' component={(props) => <AdminDashboard {...props} currentUser={currentUser} carList={carList} issuesList={issuesList} rentalList={rentalList}/>} />
-                            <Route path='/manager' component={(props) => <ViewStatistic {...props} currentUser={currentUser} statsList={statsList}/>} />
+                            <Route path='/engineer' component={(props) => <EngineerDashboard {...props}/>} />
+                            <Route path='/admin' component={(props) => <AdminDashboard {...props}/>}/>
+                            <Route path='/manager' component={(props) => <ManagerDashboard {...props}/>} />
                         </Switch>
                     </div>              
                 </div>
