@@ -35,8 +35,8 @@ input[type=text]:not(.browser-default):focus:not([readonly])+label, textarea.mat
 }
 
 .bckgrd {
-  background: rgb(205, 221, 154);
-  background: linear-gradient(90deg, rgba(205, 221, 154, 1) 0%, rgba(194, 122, 186, 1) 26%, rgba(209, 134, 177, 1) 55%);
+  background: rgb(255, 255, 255);
+
   background-size: 100%;
 }
 

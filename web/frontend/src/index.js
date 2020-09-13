@@ -43,7 +43,7 @@ export default (storageRef)
 
 function AuthIsLoaded({ children }) {
     const auth = useSelector(state => state.firebase.auth)
-    if (!isLoaded(auth)) return <div style={{ textAlign: "center", paddingTop:"20px" }}><h1 style={{ fontFamily: 'Muli', marginBottom: "5%" }}>Loading...</h1><ColorLinearProgress style={{ padding: "0.3%" }} /></div>;
+    if (!isLoaded(auth)) return <div style={{ textAlign: "center", paddingTop:"20px" }}><h1 style={{ fontFamily: 'Muli', marginBottom: "5%" }}>Loading...</h1><img alt='loading' src='/Car Loading.gif'></img></div>;
     return children
 }
 
