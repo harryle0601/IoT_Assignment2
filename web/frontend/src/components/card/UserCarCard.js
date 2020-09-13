@@ -33,13 +33,12 @@ const CarCard = (props) => {
                 <div style={{ marginTop: "2%" }}>
                     <div className='image'>
                         <CardMedia
-                            // component="img"
                             alt="car"
                             className={cx(classes.media, mediaStyles.root)}
                             image={car.Image}
                         />
                         <div className="overlay" style={{ borderRadius: 16 }}>
-                            {<BookThisCarDialog uid={props.uid} car={car} currentUser={props.currentUser} />}
+                            {<BookThisCarDialog car={car} currentUser={props.currentUser}/>}
                         </div>
                     </div>
                 </div>

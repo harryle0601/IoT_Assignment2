@@ -5,7 +5,6 @@ import { makeStyles, useTheme, AppBar, Toolbar, Typography } from '@material-ui/
 import SignedOutLinks from './SignedOutLinks'
 import SignedInLinks from './SignedInLinks'
 
-const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
     root: {
         flexGrow: 1,
@@ -28,7 +27,7 @@ const Navbar = (props) => {
                 style={{ background: 'transparent', boxShadow: 'none' }}>
                 <Toolbar>
                     <Link to="/">
-                        <h2>IoT Final</h2>
+                        <h3>IoT Final</h3>
                     </Link>
                     <div className={classes.root} />
                     {links}

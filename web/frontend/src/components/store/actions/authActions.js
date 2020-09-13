@@ -17,10 +17,9 @@ export const signInEmailPassword = (credentials) => {
 export const signInGmail = () => {
     return (dispatch, getState) => {
         firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(resp => {
-            return firebase.firestore().collection('users').doc(resp.user.uid).set({
-                Email: resp.user.email,
-                Role: "User",
-            });
+            firebase.firestore().collection('users').doc(resp.user.uid).set({
+                Email: resp.user.email
+            }, { merge: true });
             dispatch({ type: 'LOGIN_SUCCESS' });
         }).catch((err) => {
             dispatch({ type: 'LOGIN_ERROR', err });

@@ -8,9 +8,6 @@ const carReducer = (state = initState, action) => {
         case 'ADD_CAR_ERROR':
             console.log('add car error');
             return state;
-        // case 'CAR_TO_CART':
-        //     console.log('cart delivered');
-        //     return {...state, cart : action.payload};
         case 'EDIT_CAR_SUCCESS':
             console.log('edit car success');
             return state;

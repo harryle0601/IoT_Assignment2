@@ -3,48 +3,14 @@ import { firestoreConnect, populate } from 'react-redux-firebase'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import React from "react";
-import { Grid, FormControlLabel, Tabs, Tab, Checkbox, Slider, TextField, 
-    Card, CardContent, CardHeader, Table, TableHead, TableBody, TableRow, TableCell,
-    Button, Input, Dialog, DialogTitle, DialogContent, DialogActions,
+import { Grid, Tabs, Tab, Slider, Card, CardContent, Table, TableHead, TableBody, TableRow, TableCell,
     Container, Typography, Box, TableContainer, IconButton} from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import { fade, withStyles } from '@material-ui/core/styles'
-import CarCard from "../card/UserCarCard";
 import ClearIcon from '@material-ui/icons/Clear'
 import * as FilterFunctions from "../utils/FilterFunctions"
 import { TabPanel, a11yProps } from '../layout/Tabs'
 import { returnCar } from "../store/actions/rentalActions"
 import SearchCar from "../view/searchCar"
-
-const PrettoSlider = withStyles({
-    root: {
-        color: '#52af77',
-        height: 8,
-    },
-    thumb: {
-        height: 24,
-        width: 24,
-        backgroundColor: '#fff',
-        border: '2px solid currentColor',
-        marginTop: -8,
-        marginLeft: -12,
-        '&:focus, &:hover, &$active': {
-            boxShadow: 'inherit',
-        },
-    },
-    active: {},
-    valueLabel: {
-        left: 'calc(-50% + 4px)',
-    },
-    track: {
-        height: 8,
-        borderRadius: 4,
-    },
-    rail: {
-        height: 8,
-        borderRadius: 4,
-    },
-})(Slider);
 
 const useStyles = theme => ({
     search: {
@@ -117,7 +83,7 @@ const useStyles = theme => ({
     }
 });
 
-class AdminDashboard extends React.Component {
+class SeachCar extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -136,9 +102,11 @@ class AdminDashboard extends React.Component {
 
     render() {
         const { auth, classes, cars, currentUser, rental } = this.props;
+        console.log("props of sc", this.props)
         const { tab } = this.state
         if (!auth.uid) return <Redirect to='/signin' />
         else if (currentUser) {
+            if (currentUser.Role === "Admin") return <Redirect to='/admin' />
             if (currentUser.Role === "Engineer") return <Redirect to='/engineer' />
             if (currentUser.Role === "Manager") return <Redirect to='/manager' />
         }
@@ -158,8 +126,7 @@ class AdminDashboard extends React.Component {
                     </Tabs>
                     <div>
                         <TabPanel value={tab} index={0}>
-                            {(props) => <SearchCar {...props}/>}
-                        </TabPanel>
+                            {(props) => <SearchCar {...props}/>}</TabPanel>
                         <TabPanel value={tab} index={1}>
                             <Container>
                                 <div style={{ maxHeight: '80vh' }}>
@@ -220,7 +187,6 @@ class AdminDashboard extends React.Component {
                                     </Card>
                                 </div>
                             </Container>
-                        
                         </TabPanel>
                     </div>
                 </div>
@@ -243,7 +209,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        editCar: (rental, returnDate) => dispatch(returnCar(rental, returnDate))
+        returnCar: (rental, returnDate) => dispatch(returnCar(rental, returnDate))
     }
 }
 
@@ -253,8 +219,7 @@ export default compose(
         if (!props.auth.uid) return [];
         else return [
             { collection: 'cars' },
-            { collection: 'rental', queryParams:['orderByChild=RentDate'] },
-            { collection: 'users' }
+            { collection: 'rental', where:[['UID', '==',  props.auth.uid]],queryParams:['orderByChild=RentDate'] }
         ]
     }),
-)(withStyles(useStyles)(AdminDashboard))
+)(withStyles(useStyles)(SeachCar))

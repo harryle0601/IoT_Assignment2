@@ -4,12 +4,14 @@ import { firebaseReducer } from 'react-redux-firebase'
 import authReducer from './authReducer'
 import carReducer from './carReducer'
 import uploadReducer from './uploadReducer'
+import rentalReducer from './rentalReducer'
 
 const rootReducer = combineReducers({
     auth: authReducer,
     firestore: firestoreReducer,
     firebase: firebaseReducer,
     carReducer,
+    rentalReducer,
     uploadReducer
 });
 
