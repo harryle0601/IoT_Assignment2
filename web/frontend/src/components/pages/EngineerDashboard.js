@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import React from "react";
 import { fade, withStyles } from '@material-ui/core/styles'
-import * as FilterFunctions from "../utils/FilterFunctions"
 import { returnCar } from "../store/actions/rentalActions"
 import IssueHistory from "../view/issuesHistory"
 
@@ -82,19 +81,16 @@ const useStyles = theme => ({
 class EngineerDashboard extends React.Component {
 
     render() {
-        const { auth, cars, currentUser, issues } = this.props;
+        const { auth, currentUser, issues } = this.props;
+        console.log(this.props)
         if (!auth.uid) return <Redirect to='/signin' />
         else if (currentUser) {
             if (currentUser.Role === "Admin") return <Redirect to='/admin' />
             if (currentUser.Role === "Manager") return <Redirect to='/manager' />
         }
         if (issues) {
-            var filters = FilterFunctions.getFilterTags(cars)
-            return (
-                <div>
-                    {(props) => <IssueHistory {...props} issues={issues} currentUser={currentUser} auth={auth}/>}
-                </div>
-            );
+            console.log("issues recedived")
+            return <IssueHistory {...this.props} issues={issues} currentUser={currentUser} auth={auth}/>;
         }
         return (<div></div>)
     }
@@ -110,14 +106,8 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        editCar: (rental, returnDate) => dispatch(returnCar(rental, returnDate))
-    }
-}
-
 export default compose(
-    connect(mapStateToProps, mapDispatchToProps),
+    connect(mapStateToProps, null),
     firestoreConnect((props) => {
         if (!props.auth.uid) return [];
         else return [

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Container, NoSsr, LinearProgress, withStyles } from '@material-ui/core'
+import { Container, NoSsr } from '@material-ui/core'
 import StyledButton from '../layout/StyledButton'
 import "./style.css"
 

@@ -6,7 +6,6 @@ import React from "react";
 import { Tabs, Tab } from '@material-ui/core';
 import { fade, withStyles } from '@material-ui/core/styles'
 import { TabPanel, a11yProps } from '../layout/Tabs'
-import { returnCar } from "../store/actions/rentalActions"
 import SearchCar from "../view/searchCar"
 import RentalHistory from "../view/rentalHistory"
 import IssueHistory from "../view/issuesHistory"
@@ -157,21 +156,15 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        editCar: (rental, returnDate) => dispatch(returnCar(rental, returnDate))
-    }
-}
-
 export default compose(
-    connect(mapStateToProps, mapDispatchToProps),
+    connect(mapStateToProps, null),
     firestoreConnect((props) => {
         if (!props.auth.uid) return [];
         else return [
             { collection: 'cars' },
             { collection: 'rental' },
             { collection: 'issues' },
-            { collection: 'users' }
+            { collection: 'users'}
         ]
     }),
 )(withStyles(useStyles)(AdminDashboard))

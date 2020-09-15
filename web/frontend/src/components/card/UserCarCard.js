@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import cx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Card, CardContent, CardMedia } from '@material-ui/core';
@@ -7,6 +7,8 @@ import { useFourThreeCardMediaStyles } from '@mui-treasury/styles/cardMedia/four
 import { useN04TextInfoContentStyles } from '@mui-treasury/styles/textInfoContent/n04';
 import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
 import BookThisCarDialog from '../dialog/bookingDialog'
+import EditCarInfoDialog from '../dialog/editCarInfoDialog'
+
 
 const useStyles = makeStyles(() => ({
     card: {
@@ -25,7 +27,7 @@ const CarCard = (props) => {
     const mediaStyles = useFourThreeCardMediaStyles();
     const textCardContentStyles = useN04TextInfoContentStyles();
     const shadowStyles = useOverShadowStyles({ inactive: false });
-    const car = props.car
+    const { car, currentUser } = props
 
     return (
         <Card className={cx(classes.root, shadowStyles.root)} style={{ position: "relative", marginBottom: '10px', borderRadius: 16 }}>
@@ -38,7 +40,8 @@ const CarCard = (props) => {
                             image={car.Image}
                         />
                         <div className="overlay" style={{ borderRadius: 16 }}>
-                            {<BookThisCarDialog car={car} currentUser={props.currentUser}/>}
+                            { currentUser.Role !== "Admin" ? <BookThisCarDialog car={car} currentUser={currentUser}/>
+                                                    : <EditCarInfoDialog car={car} currentUser={currentUser}/>}
                         </div>
                     </div>
                 </div>

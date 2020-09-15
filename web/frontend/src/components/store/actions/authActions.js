@@ -42,12 +42,12 @@ export const signUp = (newUser) => {
             newUser.password
         ).then(resp => {
             return firebase.firestore().collection('users').doc(resp.user.uid).set({
-                Email: newUser.email,
-                Role: newUser.role,
+                Email: newUser.email
             });
         }).then(() => {
             dispatch({ type: 'SIGNUP_SUCCESS' });
         }).catch((err) => {
+            console.log(err.message)
             dispatch({ type: 'SIGNUP_ERROR', err });
         });
     }

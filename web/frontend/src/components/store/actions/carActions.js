@@ -11,9 +11,10 @@ export const addCar = (car) => {
     }
 };
 
-export const editCar = (car) => {
+export const editCar = (car, id) => {
     return (dispatch, getState) => {
-        firebase.firestore().collection('cars').doc(car.id).set({
+        console.log("firebase cars id",id)
+        firebase.firestore().collection('cars').doc(id).set({
             ...car,
         }, { merge: true }).then(() => {
             dispatch({ type: 'EDIT_CAR_SUCCESS' });

@@ -158,7 +158,7 @@ export default compose(
         if (!props.auth.uid) return [];
         else return [
             { collection: 'cars' },
-            { collection: 'rental', where:[['UID', '==',  props.auth.uid]],queryParams:['orderByChild=RentDate'] }
+            { collection: 'rental', where:[['UID', '==',  props.auth.uid]], queryParams:['orderByChild=RentDate'] }
         ]
     }),
 )(withStyles(useStyles)(SeachCar))

@@ -1,12 +1,12 @@
-import { firestoreConnect } from 'react-redux-firebase'
-import { connect } from 'react-redux'
-import { compose } from 'redux'
 import React from "react";
-import { TextField, Grid, FormControlLabel,Checkbox, Slider, TextFieldn } from '@material-ui/core';
+import { TextField, Grid, FormControlLabel, Checkbox, Slider, Button } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { fade, withStyles } from '@material-ui/core/styles'
+import TrendingDownOutlinedIcon from '@material-ui/icons/TrendingDownOutlined';
+import TrendingUpOutlinedIcon from '@material-ui/icons/TrendingUpOutlined';
 import CarCard from "../card/UserCarCard";
-import * as FilterFunctions from "../utils/FilterFunctions"
+import { getFilterTags, filteredList, sortedByPrice } from "../utils/CarFilter"
+import EditCarInfoDialog from "../dialog/editCarInfoDialog"
 
 const PrettoSlider = withStyles({
     root: {
@@ -109,6 +109,11 @@ const useStyles = theme => ({
     }
 });
 
+const defaultSort = [
+    { name: 'sortPriceAsc', value: false, icon: <TrendingUpOutlinedIcon />, detail: '$' },
+    { name: 'sortPriceDesc', value: false, icon: <TrendingDownOutlinedIcon />, detail: '$' }
+]
+
 class SearchCar extends React.Component {
     constructor() {
         super();
@@ -121,7 +126,8 @@ class SearchCar extends React.Component {
             maxSeats: undefined,
             color: [],
             minPrice: undefined,
-            maxPrice: undefined
+            maxPrice: undefined,
+            sort: defaultSort
         }
     }
 
@@ -163,12 +169,31 @@ class SearchCar extends React.Component {
         this.setState({ tab: value });
     }
 
+    handleSelectSort = (id, item, open) => (event) => {
+        this.setState({ sort: defaultSort })
+        this.setState((prevState) => {
+            const data = [...prevState.sort];
+            data[id] = { name: item, value: open, icon: data[id].icon, detail: data[id].detail }
+            return { sort: data }
+        })
+    }
+
     render() {
-        const { auth, classes, cars } = this.props;
-        const { available, brand, minSeats, maxSeats, color, minPrice, maxPrice } = this.state
+        const { classes, cars, currentUser } = this.props;
+        const { available, brand, minSeats, maxSeats, color, minPrice, maxPrice, sort } = this.state
         console.log("car car car", cars)
-        if (cars && auth.uid) {
-            var filters = FilterFunctions.getFilterTags(cars)
+        if (cars && currentUser) {
+            var filters = getFilterTags(cars)
+            var filtered = sortedByPrice(filteredList(cars, {
+                available: available,
+                brand: brand,
+                minSeats: minSeats,
+                maxSeats: maxSeats,
+                color: color,
+                minPrice: minPrice,
+                maxPrice: maxPrice
+            }), sort)
+
             return (
                 <Grid container spacing={1}>
                     <Grid item xs={12} sm={3} md={3} lg={3}>
@@ -177,6 +202,7 @@ class SearchCar extends React.Component {
                                 control={<Checkbox checked={available} onChange={this.handleAvailableChange.bind(this)} name="checkedA" />}
                                 label="Available only"
                             />
+                            {sort.map((option, key) => <Button key={key} onClick={this.handleSelectSort(key, option.name, !option.value)}>{option.icon}{option.detail}</Button>)}
                             <Autocomplete
                                 id="brand" multiple filterSelectedOptions options={filters.brand}
                                 onChange={(event, value) => this.handleBrandTagsChange(event, value)}
@@ -209,45 +235,21 @@ class SearchCar extends React.Component {
                                     defaultValue={[filters.minPrice, filters.maxPrice]}
                                     max={filters.maxPrice} min={filters.minPrice} />
                             </div>
+                            {currentUser.Role === "Admin" ? <EditCarInfoDialog/> : null}
                         </form>
                     </Grid>
                     <Grid item xs={12} sm={9} md={9} lg={9} style={{ maxHeight: "620px", overflow: 'auto', overflowX: "hidden" }}>
-                        <Grid
-                            container
-                            spacing={2}
-                            direction="row"
-                            justify="flex-start"
-                            alignItems="center"
-                        >
-                            {FilterFunctions.filteredList(cars, {
-                                available: available,
-                                brand: brand,
-                                minSeats: minSeats,
-                                maxSeats: maxSeats,
-                                color: color,
-                                minPrice: minPrice,
-                                maxPrice: maxPrice
-                            }).length !== 0 ? FilterFunctions.filteredList(cars, {
-                                available: available,
-                                brand: brand,
-                                minSeats: minSeats,
-                                maxSeats: maxSeats,
-                                color: color,
-                                minPrice: minPrice,
-                                maxPrice: maxPrice
-                            }).map((car, index) => {
+                        <Grid container spacing={2} direction="row" justify="flex-start" alignItems="center">
+                            {(filtered.length !== 0) ? filtered.map((car, index) => {
                                 return (
                                     <Grid item xs={12} sm={6} md={4} key={index}>
                                         <CarCard
                                             key={index}
                                             car={car}
-                                            uid={this.props.auth.uid}
                                             currentUser={this.props.currentUser}
                                         />
                                     </Grid>
-                                )
-                            })
-                                : <Grid item xs={12}>
+                                )}) : <Grid item xs={12}>
                                     <div style={{ textAlign: 'center' }}>
                                         <img style={{ width: '40%' }} alt='' src='https://firebasestorage.googleapis.com/v0/b/sepm-nocovy.appspot.com/o/cherry-list-is-empty-1.png?alt=media&token=ab7a1c77-b257-4177-b338-2c877222d832'></img>
                                         <h5 style={{ fontFamily: 'Muli', marginBottom: "5%" }}>No Product Found</h5>

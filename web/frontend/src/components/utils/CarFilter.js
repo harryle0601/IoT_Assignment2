@@ -32,14 +32,13 @@ export const getFilterTags = (data) => {
         if (doc.Seats < filter['minSeats']) filter['minSeats'] = doc.Seats 
         if (doc.Seats > filter['maxSeats']) filter['maxSeats'] = doc.Seats 
     });
-
     return filter
 }
 
 export const sortedByPrice = (data, order) => {
-    var ordered = []
-    if (order == "ascending") 
+    if (order[0].value) 
         return data.sort((a, b) => parseFloat(a.Price) - parseFloat(b.Price));
-    if (order == "descending") 
+    if (order[1].value) 
         return data.sort((a, b) => parseFloat(b.Price) - parseFloat(a.Price));
+    return data
 }

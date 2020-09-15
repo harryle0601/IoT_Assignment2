@@ -61,7 +61,6 @@ input[type=text]:not(.browser-default):focus:not([readonly])+label, textarea.mat
 }
 
 body {
-  overflow: hidden;
   font-family: "Oswald", sans-serif !important;
   background: var(--mainWhite) !important;
   color: var(--mainDark) !important;

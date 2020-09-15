@@ -45,12 +45,6 @@ class BookingDialog extends React.Component {
         }
     }
 
-    handleInputChange(event) {
-        this.setState({
-            [event.target.id]: event.target.value
-        });
-    }
-
     handleClickDialog = () => {
         this.setState({
             dialog: true
@@ -76,6 +70,7 @@ class BookingDialog extends React.Component {
 
     render() {
         const { classes, car, currentUser } = this.props;
+        console.log("booking car", car)
         return (
             <div>
                 {car.Available === false
@@ -110,7 +105,7 @@ class BookingDialog extends React.Component {
                                 <DateTimePicker
                                         className={classes.textField}
                                         value={this.state.bookDate}
-                                        onChange={this.handleInputChange.bind(this)}
+                                        onChange={(value) => this.setState({ bookDate: value })}
                                     />
                             </DialogContent>
                             <Grid container justify='center'>

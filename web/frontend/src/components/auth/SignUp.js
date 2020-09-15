@@ -67,7 +67,7 @@ class SignUp extends Component {
             // need a image and a path
             const file = {
                 image: avatarImg,
-                path: '/images/avatar/'
+                path: '/users/'
             }
             // new upload
             this.props.uploadToStorage(file)

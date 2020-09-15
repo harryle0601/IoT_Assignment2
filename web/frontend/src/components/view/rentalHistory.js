@@ -1,11 +1,15 @@
 import { connect } from 'react-redux'
 import React from "react";
-import { Grid, Card, CardContent, Table, TableHead, TableBody, TableRow, TableCell,
-    Container, Typography, Box, TableContainer, IconButton} from '@material-ui/core';
+import {
+    Grid, Card, CardContent, Table, TableHead, TableBody, TableRow, TableCell, Button,
+    FormControlLabel, Typography, Box, TableContainer, IconButton, Checkbox
+} from '@material-ui/core';
 import { fade, withStyles } from '@material-ui/core/styles'
+import DateTimePicker from 'react-datetime-picker';
 import EditIcon from '@material-ui/icons/Edit'
 import ClearIcon from '@material-ui/icons/Clear'
 import { returnCar, editRental } from "../store/actions/rentalActions"
+import { filteredList, sortedByRentDate } from '../utils/RentalFilter';
 
 const useStyles = theme => ({
     search: {
@@ -78,9 +82,23 @@ const useStyles = theme => ({
     }
 });
 
+const defaultSort = [
+    { name: 'sortRentAsc', value: false, detail: 'Rent Date Ascending' },
+    { name: 'sortRentDesc', value: false, detail: 'Rent Date Descending' },
+    { name: 'sortReturnAsc', value: false, detail: 'Return Date Descending' },
+    { name: 'sortReturnDesc', value: false, detail: 'Return Date Descending' },
+]
+
 class RentalHistory extends React.Component {
-    handleTabChange = (e, value) => {
-        this.setState({ tab: value });
+    constructor() {
+        super();
+        this.state = {
+            filters: {},
+            status: false,
+            fromDate: undefined,
+            toDate: undefined,
+            sort: defaultSort
+        }
     }
 
     handleRemove = (e, rental) => {
@@ -93,74 +111,111 @@ class RentalHistory extends React.Component {
         this.props.returnCar(rental, d)
     }
 
+    handleAvailableChange(event) {
+        this.setState({
+            status: event.target.checked
+        })
+    }
+
+    handleSelectFilter = (id, item, open) => (event) => {
+        this.setState({ sort: defaultSort })
+        this.setState((prevState) => {
+            const data = [...prevState.sort];
+            data[id] = { name: item, value: open, detail: data[id].detail }
+            return { sort: data }
+        })
+    }
+
     render() {
         const { auth, classes, currentUser, rental } = this.props;
-        if (rental && auth.uid) {
+        const { status, sort, fromDate, toDate } = this.state
+        if (rental && auth.uid && currentUser) {
+            var filtered = sortedByRentDate(filteredList(rental, {
+                status: status,
+                fromDate: fromDate,
+                toDate: toDate
+            }), sort)
             return (
-                <Container>
-                <div style={{ maxHeight: '150vh' }}>
-                    <Card className={classes.card} style={{
-                        display: 'flex',
-                        marginTop: "1%",
-                        overflow: 'initial',
-                        background: '#ffffff',
-                        borderRadius: 16,
-                        height: '100%'
-                    }}>
-                        <CardContent className={classes.content} style={{
+                <Grid container spacing={1}>
+                    <Grid item xs={12} sm={3} md={3} lg={3}>
+                        <form className={classes.container} noValidate>
+                            <FormControlLabel
+                                control={<Checkbox checked={status} onChange={this.handleAvailableChange.bind(this)} name="checkedA" />}
+                                label="Show not returned only"
+                            />
+                            {sort.map((option, key)=><Button key={key} onClick={this.handleSelectFilter(key, option.name, !option.value)}>{option.detail}</Button>)}
+                            <DateTimePicker
+                                        className={classes.textField} value={fromDate}
+                                        onChange={(value) => this.setState({ fromDate: value })}
+                                    />
+                            <DateTimePicker
+                                        className={classes.textField} value={toDate}
+                                        onChange={(value) => this.setState({ toDate: value })}
+                                    />
+                        </form>
+                    </Grid>
+                    <Grid item xs={12} sm={9} md={9} lg={9} style={{ maxHeight: '150vh' }}>
+                        <Card className={classes.card} style={{
                             display: 'flex',
-                            flexDirection: 'column',
-                            padding: "2%",
-                            width: '100%'
+                            marginTop: "1%",
+                            overflow: 'initial',
+                            background: '#ffffff',
+                            borderRadius: 16,
+                            height: '100%'
                         }}>
-                            <div>
-                                <TableContainer className={classes.container} style={{
-                                    maxHeight: '55vh',
-                                    marginBottom: '2%'
-                                }}>
-                                    <Table stickyHeader aria-label="sticky table">
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell align='left' style={{ minWidth: 400 }}><Typography><Box fontWeight='Bold'>Car</Box></Typography></TableCell>
-                                                {currentUser.Role === "Admin" ? <TableCell align='left'><Box fontWeight='Bold'>User Email</Box></TableCell> : null}
-                                                <TableCell align='left'><Box fontWeight='Bold'>Booked Date</Box></TableCell>
-                                                {currentUser.Role === "Admin" ? <TableCell align='left'><Box fontWeight='Bold'>Status</Box></TableCell> 
-                                                : <TableCell align='left'><Box fontWeight='Bold'>Unit Price</Box></TableCell>}
-                                                <TableCell align='right'></TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {rental.map((r, key) => {
-                                                console.log("rentdate", r.RentDate)
-                                                return (
-                                                    <TableRow hover role="checkbox" tabIndex={-1} key={r.id}>
-                                                        <TableCell align='left'>
-                                                            <Grid container direction="row" justify="flex-start" alignItems="center" >
-                                                                <img style={{ minWidth: '50px', width: '8vh', height: '8vh', objectFit: 'cover' }} src={r.Car.Image} />
-                                                                <Grid style={{ marginLeft: 20 }}>
-                                                                    <Typography variant='h6'><Box>{r.Car.Brand + " " + r.Car.Model}</Box></Typography>
-                                                                    <Typography variant='subtitle2'><Box>{r.Car.Seats + " seats " + r.Car.Color}</Box></Typography>
+                            <CardContent className={classes.content} style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                padding: "2%",
+                                width: '100%'
+                            }}>
+                                <div>
+                                    <TableContainer className={classes.container} style={{
+                                        maxHeight: '55vh',
+                                        marginBottom: '2%'
+                                    }}>
+                                        <Table stickyHeader aria-label="sticky table">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell align='left' style={{ minWidth: 200 }}><Typography><Box fontWeight='Bold'>Car</Box></Typography></TableCell>
+                                                    {currentUser.Role === "Admin" ? <TableCell align='left'><Box fontWeight='Bold'>User Email</Box></TableCell> : null}
+                                                    <TableCell align='left'><Box fontWeight='Bold'>Booked Date</Box></TableCell>
+                                                    {currentUser.Role === "Admin" ? <TableCell align='left'><Box fontWeight='Bold'>Status</Box></TableCell>
+                                                        : <TableCell align='left'><Box fontWeight='Bold'>Unit Price</Box></TableCell>}
+                                                    <TableCell align='right'></TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {filtered.map((r, key) => {
+                                                    return (
+                                                        <TableRow hover role="checkbox" tabIndex={-1} key={r.id}>
+                                                            <TableCell align='left'>
+                                                                <Grid container direction="row" justify="flex-start" alignItems="center" >
+                                                                    <img style={{ minWidth: '50px', width: '8vh', height: '8vh', objectFit: 'cover' }} src={r.Car.Image} />
+                                                                    <Grid style={{ marginLeft: 20 }}>
+                                                                        <Typography variant='h6'><Box>{r.Car.Brand + " " + r.Car.Model}</Box></Typography>
+                                                                        <Typography variant='subtitle2'><Box>{r.Car.Seats + " seats " + r.Car.Color}</Box></Typography>
+                                                                    </Grid>
                                                                 </Grid>
-                                                            </Grid>
-                                                        </TableCell>
-                                                        {currentUser.Role === "Admin" ? <TableCell align='left'><Box fontWeight='Bold'>{r.User.Email}</Box></TableCell> : null}
-                                                        <TableCell align='left'>{r.RentDate.toDate().toLocaleString()}</TableCell>
-                                                        {currentUser.Role === "Admin" ? <TableCell align='left'><Box fontWeight='Bold'>{r.ReturnDate ? "Returned" : "Not Returned"}</Box></TableCell> 
-                                                        : <TableCell align='left'>$ {(r.Car.Price).toLocaleString()}</TableCell>}
-                                                        {currentUser.Role === "Admin" 
-                                                        ? <TableCell><IconButton onClick={e => this.handleEdit(e, r)}><EditIcon/>Edit</IconButton></TableCell>
-                                                        : <TableCell>{r.ReturnDate ? "Book Canceled" : <IconButton onClick={e => this.handleRemove(e, r)}><ClearIcon/>Cancel</IconButton>}</TableCell>}
-                                                    </TableRow>
-                                                );
-                                            })}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-            </Container>    
+                                                            </TableCell>
+                                                            {currentUser.Role === "Admin" ? <TableCell align='left'><Box fontWeight='Bold'>{r.User.Email}</Box></TableCell> : null}
+                                                            <TableCell align='left'>{r.RentDate.toDate().toLocaleString()}</TableCell>
+                                                            {currentUser.Role === "Admin" ? <TableCell align='left'><Box fontWeight='Bold'>{r.ReturnDate ? "Returned" : "Not Returned"}</Box></TableCell>
+                                                                : <TableCell align='left'>$ {(r.Car.Price).toLocaleString()}</TableCell>}
+                                                            {currentUser.Role === "Admin"
+                                                                ? <TableCell><IconButton onClick={e => this.handleEdit(e, r)}><EditIcon />Edit</IconButton></TableCell>
+                                                                : <TableCell>{r.ReturnDate ? "Book Canceled" : <IconButton onClick={e => this.handleRemove(e, r)}><ClearIcon />Cancel</IconButton>}</TableCell>}
+                                                        </TableRow>
+                                                    );
+                                                })}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                </Grid>
             );
         }
         return (<div></div>)

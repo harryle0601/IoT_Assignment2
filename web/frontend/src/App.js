@@ -14,7 +14,7 @@ import ManagerDashboard from './components/pages/ViewStats';
 
 class App extends Component {
     render() {
-        const { currentUser, carList, issuesList, rentalList, currentUserRentalList, statsList } = this.props
+        const { currentUser, currentUserRentalList } = this.props
         return (
             <BrowserRouter>
                 <div className="App">

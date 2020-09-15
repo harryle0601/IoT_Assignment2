@@ -1,7 +1,4 @@
 import React from "react";
-import Grid from '@material-ui/core/Grid';
-import Button from "@material-ui/core/Button";
-import { getCarFiltered } from "../store/actions/carActions";
 import { connect } from 'react-redux'
 
 class ViewStatistics extends React.Component {

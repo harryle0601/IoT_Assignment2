@@ -1,11 +1,15 @@
 import { connect } from 'react-redux'
 import React from "react";
-import { Grid, Card, CardContent, Table, TableHead, TableBody, TableRow, TableCell,
-    Container, Typography, Box, TableContainer, IconButton} from '@material-ui/core';
+import {
+    Grid, Card, CardContent, Table, TableHead, TableBody, TableRow, TableCell,
+    FormControlLabel, Typography, Box, TableContainer, IconButton, Checkbox, Button
+} from '@material-ui/core';
 import { fade, withStyles } from '@material-ui/core/styles'
 import EditIcon from '@material-ui/icons/Edit'
 import CheckIcon from '@material-ui/icons/Check'
+import DateTimePicker from 'react-datetime-picker';
 import { editIssue } from "../store/actions/issueActions"
+import { filteredList, sortedByCreateDate } from '../utils/IssueFilter'
 
 const useStyles = theme => ({
     search: {
@@ -78,9 +82,23 @@ const useStyles = theme => ({
     }
 });
 
+const defaultSort = [
+    { name: 'sortRentAsc', value: false, detail: 'Create Date Oldest' }
+    , { name: 'sortRentDesc', value: false, detail: 'Create Date Latest' }
+    // , { name: 'sortReturnAsc', value: false, detail: 'Return Date Descending' }
+    // , { name: 'sortReturnDesc', value: false, detail: 'Return Date Descending' }
+]
+
 class IssueHistory extends React.Component {
-    handleTabChange = (e, value) => {
-        this.setState({ tab: value });
+    constructor() {
+        super();
+        this.state = {
+            filters: {}
+            , status: false
+            , fromDate: undefined
+            , toDate: undefined
+            , sort: defaultSort
+        }
     }
 
     handleResolve = (e, rental) => {
@@ -88,76 +106,114 @@ class IssueHistory extends React.Component {
         this.props.editIssue(rental)
     }
 
-    handleEdit = (e, rental) => {
-        // var d = new Date().getTime();
-        // this.props.returnCar(rental, d)
+    handleAvailableChange(event) {
+        this.setState({
+            status: event.target.checked
+        })
+    }
+
+    handleSelectFilter = (id, item, open) => (event) => {
+        this.setState({ sort: defaultSort })
+        this.setState((prevState) => {
+            const data = [...prevState.sort];
+            data[id] = { name: item, value: open, detail: data[id].detail }
+            return { sort: data }
+        })
     }
 
     render() {
-        const { auth, classes, currentUser, issues } = this.props;
-        if (issues && auth.uid) {
+        const { auth, classes, currentUser, issues } = this.props
+        const { status, sort, fromDate, toDate } = this.state
+        console.log("weihweirhwuihuiwgdfdcwggufwuerf")
+        if (issues && auth.uid && currentUser) {
+            var filtered = sortedByCreateDate(filteredList(issues, {
+                status: status
+                , fromDate: fromDate
+                , toDate: toDate
+            }), sort)
             return (
-                <Container>
-                <div style={{ maxHeight: '150vh' }}>
-                    <Card className={classes.card} style={{
-                        display: 'flex',
-                        marginTop: "1%",
-                        overflow: 'initial',
-                        background: '#ffffff',
-                        borderRadius: 16,
-                        height: '100%'
-                    }}>
-                        <CardContent className={classes.content} style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            padding: "2%",
-                            width: '100%'
-                        }}>
-                            <div>
-                                <TableContainer className={classes.container} style={{
-                                    maxHeight: '55vh',
-                                    marginBottom: '2%'
+                <Grid container spacing={1}>
+                    <Grid item xs={12} sm={3} md={3} lg={3}>
+                        <form className={classes.container} noValidate>
+                            <FormControlLabel
+                                control={<Checkbox checked={status} onChange={this.handleAvailableChange.bind(this)} name="checkedA" />}
+                                label="Show unresolved only"
+                            />
+                            {sort.map((option, key) => <Button key={key} onClick={this.handleSelectFilter(key, option.name, !option.value)}>{option.detail}</Button>)}
+                            <DateTimePicker
+                                className={classes.textField} value={fromDate}
+                                onChange={(value) => this.setState({ fromDate: value })}
+                            />
+                            <DateTimePicker
+                                className={classes.textField} value={toDate}
+                                onChange={(value) => this.setState({ toDate: value })}
+                            />
+                        </form>
+                    </Grid>
+                    <Grid item xs={12} sm={9} md={9} lg={9}>
+                        <div style={{ maxHeight: '150vh' }}>
+                            <Card className={classes.card} style={{
+                                display: 'flex',
+                                marginTop: "1%",
+                                overflow: 'initial',
+                                background: '#ffffff',
+                                borderRadius: 16,
+                                height: '100%'
+                            }}>
+                                <CardContent className={classes.content} style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    padding: "2%",
+                                    width: '100%'
                                 }}>
-                                    <Table stickyHeader aria-label="sticky table">
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell align='left' style={{ minWidth: 180 }}><Typography><Box fontWeight='Bold'>Car</Box></Typography></TableCell>
-                                                <TableCell align='left' style={{ minWidth: 220 }} ><Box fontWeight='Bold'>Description</Box></TableCell>
-                                                <TableCell align='left'><Box fontWeight='Bold'>Report Date</Box></TableCell>
-                                                <TableCell align='left'><Box fontWeight='Bold'>Status</Box></TableCell>
-                                                {currentUser.Role === "Admin" ? <TableCell align='right'></TableCell> : null}
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {issues.map((r, key) => {
-                                                return (
-                                                    <TableRow hover role="checkbox" tabIndex={-1} key={r.id}>
-                                                        <TableCell align='left'>
-                                                            <Grid container direction="row" justify="flex-start" alignItems="center" >
-                                                                <img style={{ minWidth: '50px', width: '8vh', height: '8vh', objectFit: 'cover' }} src={r.Car.Image} />
-                                                                <Grid style={{ marginLeft: 20 }}>
-                                                                    <Typography variant='h6'><Box>{r.Car.Brand + " " + r.Car.Model}</Box></Typography>
-                                                                    <Typography variant='subtitle2'><Box>{r.Car.Seats + " seats " + r.Car.Color}</Box></Typography>
-                                                                </Grid>
-                                                            </Grid>
-                                                        </TableCell>
-                                                        <TableCell align='left'><Box>{r.Summary}</Box></TableCell>
-                                                        <TableCell align='left'>{r.ReportDate.toDate().toLocaleString()}</TableCell>
-                                                        <TableCell align='left'>{r.Resolved ? "Resolved" : "Not Resolve"} </TableCell>
-                                                        {currentUser.Role === "Admin" 
-                                                        ? <TableCell><IconButton onClick={e => this.handleEdit(e, r)}><EditIcon/>Edit</IconButton></TableCell>
-                                                        : <TableCell>{r.Resolved ? "Book Canceled" : <IconButton onClick={e => this.handleResolved(e, r)}><CheckIcon/>Cancel</IconButton>}</TableCell>}
+                                    <div>
+                                        <TableContainer className={classes.container} style={{
+                                            maxHeight: '55vh',
+                                            marginBottom: '2%'
+                                        }}>
+                                            <Table stickyHeader aria-label="sticky table">
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell align='left' style={{ minWidth: 180 }}><Typography><Box fontWeight='Bold'>Car</Box></Typography></TableCell>
+                                                        <TableCell align='left' style={{ minWidth: 220 }} ><Box fontWeight='Bold'>Description</Box></TableCell>
+                                                        <TableCell align='left'><Box fontWeight='Bold'>Report Date</Box></TableCell>
+                                                        <TableCell align='left'><Box fontWeight='Bold'>Status</Box></TableCell>
+                                                        {currentUser.Role === "Admin" ? <TableCell align='right'></TableCell> : null}
                                                     </TableRow>
-                                                );
-                                            })}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-            </Container>    
+                                                </TableHead>
+                                                <TableBody>
+                                                    {filtered.map((r, key) => {
+                                                        return (
+                                                            <TableRow hover role="checkbox" tabIndex={-1} key={r.id}>
+                                                                <TableCell align='left'>
+                                                                    <Grid container direction="row" justify="flex-start" alignItems="center" >
+                                                                        <img style={{ minWidth: '50px', width: '8vh', height: '8vh', objectFit: 'cover' }} src={r.Car.Image} />
+                                                                        <Grid style={{ marginLeft: 20 }}>
+                                                                            <Typography variant='h6'><Box>{r.Car.Brand + " " + r.Car.Model}</Box></Typography>
+                                                                            <Typography variant='subtitle2'><Box>{r.Car.Seats + " seats " + r.Car.Color}</Box></Typography>
+                                                                        </Grid>
+                                                                    </Grid>
+                                                                </TableCell>
+                                                                <TableCell align='left'><Box>{r.Summary}</Box></TableCell>
+                                                                <TableCell align='left'>{r.ReportDate.toDate().toLocaleString()}</TableCell>
+                                                                {currentUser.Role === "Admin" 
+                                                                    ? <TableCell align='left'>{r.Resolved ? "Resolved" : "Not Resolve"} </TableCell>
+                                                                    : <TableCell>{r.Resolved ? "Resolved" : <IconButton onClick={e => this.handleResolved(e, r)}><CheckIcon />Mark as Resolved</IconButton>}</TableCell>}
+                                                                {currentUser.Role === "Admin"
+                                                                    ? <TableCell><IconButton onClick={e => this.handleEdit(e, r)}><EditIcon />Edit</IconButton></TableCell> : null }
+                                                            </TableRow>
+                                                        );
+                                                    })}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                    </Grid>
+                </Grid>
             );
         }
         return (<div></div>)
