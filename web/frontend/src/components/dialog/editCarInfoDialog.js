@@ -65,6 +65,13 @@ class BookingDialog extends React.Component {
             this.setState({ carImg: image });
         }
     }
+
+    validation() {
+        if (this.state.brand === "" || this.state.seats === "" || this.state.color === "" || this.state.price === "" || this.state.model === "") 
+            return false
+        return true
+    }
+
     handleClickDialog(e) {
         this.setState({ dialog: true })
     }
@@ -75,17 +82,19 @@ class BookingDialog extends React.Component {
 
     handleSubmit = (e) => {
         e.preventDefault()
-        this.props.uploadToStorage({
-            image: this.state.carImg,
-            path: "/cars/"})
-        this.setState({
-            uploading: true
-        })
+        if (this.validation()) {
+            this.props.uploadToStorage({
+                image: this.state.carImg,
+                path: "/cars/"})
+            this.setState({
+                isUploading: true
+            })
+        }
     }
 
     componentDidUpdate(prevProp, prevState) {
-        console.log("open prevpreisa sate", this.props.car, this.state.uploading)
-        if (this.props.carImg && this.state.uploading && !prevState.uploading) {
+        console.log("open prevpreisa sate", this.props.car, this.state.isUploading)
+        if (this.props.carImg && this.state.isUploading) {
             var carImage = this.props.carImg
             if (carImage === "https://firebasestorage.googleapis.com/v0/b/iotassignment2-d4c67.appspot.com/o/cars%2Fno-image.png?alt=media&token=c82408de-0396-4c2f-b0a3-1cc5fd127215" && this.props.car.Image) {
                 carImage = this.props.car.Image
@@ -100,10 +109,10 @@ class BookingDialog extends React.Component {
                 Price: (this.state.price ? parseInt(this.state.price) : this.props.car.Price),
                 Image: carImage
             }
-            console.log("readyly printed car", this.props.car.id, newCar)
             if (this.props.car) this.props.editCar(newCar, this.props.car.id)
             else this.props.addCar(newCar)
             this.setState({
+                isUploading: false,
                 dialog: false
             })
         }
@@ -111,7 +120,7 @@ class BookingDialog extends React.Component {
 
     render() {
         const { car, carImg } = this.props
-        console.log("open edit dialog", car, this.state.uploading)
+        console.log("open edit dialog", car, this.state.isUploading)
         return (
             <div>
                 <Button variant="contained" color="secondary" onClick={this.handleClickDialog.bind(this)}>{car ? "Edit car" : "Add new car"}</Button>

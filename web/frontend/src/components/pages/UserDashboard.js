@@ -3,7 +3,7 @@ import { firestoreConnect } from 'react-redux-firebase'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import React from "react";
-import { Tabs, Tab } from '@material-ui/core';
+import { Tabs, Tab, Container } from '@material-ui/core';
 import { fade, withStyles } from '@material-ui/core/styles'
 import RentalHistory from "../view/rentalHistory"
 import { TabPanel, a11yProps } from '../layout/Tabs'
@@ -111,6 +111,8 @@ class SeachCar extends React.Component {
         if (cars && rental) {
             return (
                 <div>
+                    
+                    <Container >
                     <Tabs
                         orientation="horizontal"
                         value={tab}
@@ -128,6 +130,7 @@ class SeachCar extends React.Component {
                             {(props) => <RentalHistory {...props} rental={rental} currentUser={currentUser} auth={auth}/>}
                         </TabPanel>
                     </div>
+                    </Container>
                 </div>
             );
         }

@@ -4,7 +4,7 @@ const uploadReducer = (state = initState, action) => {
     switch (action.type) {
         case 'UPLOADING':
             console.log('uploading');
-            return { ...state, progress: action.payload };
+            return { ...state, progress: action.payload, url: undefined };
         case 'UPLOAD_SUCCESS':
             console.log('create file success', action.payload);
             return { ...state, url: action.payload };

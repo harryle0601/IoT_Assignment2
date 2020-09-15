@@ -141,7 +141,7 @@ class SearchCar extends React.Component {
 
     handleBrandTagsChange(event, value) {
         this.setState({
-            brand: value
+            brand: value.toString()
         })
     }
 
@@ -155,7 +155,7 @@ class SearchCar extends React.Component {
 
     handleColorTagsChange(event, value) {
         this.setState({
-            color: value
+            color: value.toString()
         })
     }
 
@@ -193,7 +193,7 @@ class SearchCar extends React.Component {
                 minPrice: minPrice,
                 maxPrice: maxPrice
             }), sort)
-
+            console.log("filter tags", filters)
             return (
                 <Grid container spacing={1}>
                     <Grid item xs={12} sm={3} md={3} lg={3}>

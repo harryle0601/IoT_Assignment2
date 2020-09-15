@@ -1,14 +1,15 @@
 import { connect } from 'react-redux'
 import React from "react";
 import {
-    Grid, Card, CardContent, Table, TableHead, TableBody, TableRow, TableCell,
-    Container, Typography, Box, TableContainer, IconButton, TextField
+    Grid, Card, CardContent, Table, TableHead, TableBody, TableRow, TableCell, MenuItem, FormHelperText,
+    Container, Typography, Box, TableContainer, FormControl, TextField, InputLabel, Select
 } from '@material-ui/core';
 import { fade, withStyles } from '@material-ui/core/styles'
 import EditIcon from '@material-ui/icons/Edit'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { returnCar, editRental } from "../store/actions/rentalActions"
 import { filteredList } from "../utils/UserFilter"
+import UserListCell from "../card/UserListCell"
 
 const useStyles = theme => ({
     search: {
@@ -96,12 +97,8 @@ class RentalHistory extends React.Component {
         })
     }
 
-    handleRoleChange(event, value) {
-
-    }
-
     render() {
-        const { auth, classes, users } = this.props;
+        const { auth, classes, currentUser, users } = this.props;
         const { role } = this.state
         if (users && auth.uid) {
             var filtered = filteredList(users, { role: role })
@@ -109,7 +106,6 @@ class RentalHistory extends React.Component {
                 <Grid container spacing={1}>
                     <Grid item xs={12} sm={3} md={3} lg={3}>
                         <form className={classes.container} noValidate>
-
                             <Autocomplete
                                 id="role" multiple filterSelectedOptions options={['Admin', 'User', 'Engineer', 'Manager']}
                                 onChange={(event, value) => this.handleRoleTagsChange(event, value)}
@@ -149,39 +145,13 @@ class RentalHistory extends React.Component {
                                                             <TableCell align='left'><Typography><Box fontWeight='Bold'>Email</Box></Typography></TableCell>
                                                             <TableCell align='left' style={{ minWidth: 120 }}><Box fontWeight='Bold'>Phone</Box></TableCell>
                                                             <TableCell align='left' style={{ minWidth: 300 }}><Typography><Box fontWeight='Bold'>Address</Box></Typography></TableCell>
-                                                            <TableCell align='right'><Box fontWeight='Bold'>Roles</Box></TableCell>
-                                                            {/* <TableCell align='right'></TableCell> */}
+                                                            <TableCell align='left'><Box fontWeight='Bold'>Roles</Box></TableCell>
                                                         </TableRow>
                                                     </TableHead>
                                                     <TableBody>
                                                         {filtered.map((r, key) => {
                                                             console.log("rentdate", r.RentDate)
-                                                            return (
-                                                                <TableRow hover role="checkbox" tabIndex={-1} key={r.id}>
-                                                                    <TableCell align='left'>{r.Email}</TableCell>
-                                                                    <TableCell align='left'>{r.Phone}</TableCell>
-                                                                    <TableCell align='left'>{r.Address}</TableCell>
-                                                                    <TableCell align='right'>
-                                                                        <FormControl required className={classes.formControl}>
-                                                                            <InputLabel id="demo-simple-select-required-label">Age</InputLabel>
-                                                                            <Select
-                                                                                labelId="demo-simple-select-required-label"
-                                                                                id="demo-simple-select-required"
-                                                                                value={this.state.role}
-                                                                                onChange={this.handleInputChange.bind(this)}
-                                                                                className={classes.selectEmpty}
-                                                                            >
-                                                                                <MenuItem value={"User"}>User</MenuItem>
-                                                                                <MenuItem value={"Admin"}>Admin</MenuItem>
-                                                                                <MenuItem value={"Manager"}>Manager</MenuItem>
-                                                                                <MenuItem value={"Engineer"}>Engineer</MenuItem>
-                                                                            </Select>
-                                                                            <FormHelperText>Required</FormHelperText>
-                                                                        </FormControl>
-                                                                    </TableCell>
-                                                                    {/* <TableCell><IconButton onClick={e => this.handleEdit(e, r)}><EditIcon />Edit</IconButton></TableCell> */}
-                                                                </TableRow>
-                                                            );
+                                                            return <UserListCell currentUser={currentUser} user={r}/>;
                                                         })}
                                                     </TableBody>
                                                 </Table>
@@ -202,7 +172,6 @@ class RentalHistory extends React.Component {
 const mapDispatchToProps = (dispatch) => {
     return {
         returnCar: (rental, returnDate) => dispatch(returnCar(rental, returnDate)),
-
         editRental: (rental) => dispatch(editRental(rental))
     }
 }
