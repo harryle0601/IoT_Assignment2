@@ -1,10 +1,10 @@
 import React from "react";
 import { connect } from 'react-redux'
-import DateTimePicker from 'react-datetime-picker';
+
 import { Button, Dialog, DialogContent, DialogActions, DialogTitle, Grid } from '@material-ui/core';
 import { withStyles } from "@material-ui/core/styles";
-import { addRental } from "../store/actions/rentalActions"
-
+import { addRental } from "../store/actions/rentalActions";
+import {  KeyboardDateTimePicker } from "@material-ui/pickers";
 const useStyles = theme => ({
     container: {
         display: 'flex',
@@ -102,11 +102,19 @@ class BookingDialog extends React.Component {
                                     <Grid item xs={6}><div style={{ textAlign: 'right', fontSize: '30px', fontFamily: 'bold' }}> ${car.Price} </div></Grid>
                                 </Grid>
                                 <h5>Booking Date:</h5>
-                                <DateTimePicker
+                                <KeyboardDateTimePicker
+                                value={this.state.bookDate}
+                                onChange={(value) => this.setState({ bookDate: value })}
+                                label="Booking Date:"
+                                 onError={console.log}
+                                minDate={new Date("2018-01-01T00:00")}
+                                format="yyyy/MM/dd hh:mm a"
+                                />
+                                {/* <DateTimePicker
                                         className={classes.textField}
                                         value={this.state.bookDate}
                                         onChange={(value) => this.setState({ bookDate: value })}
-                                    />
+                                    /> */}
                             </DialogContent>
                             <Grid container justify='center'>
                             </Grid>

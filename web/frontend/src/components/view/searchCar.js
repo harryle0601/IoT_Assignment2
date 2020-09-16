@@ -238,7 +238,7 @@ class SearchCar extends React.Component {
                             {currentUser.Role === "Admin" ? <EditCarInfoDialog/> : null}
                         </form>
                     </Grid>
-                    <Grid item xs={12} sm={9} md={9} lg={9} style={{ maxHeight: "620px", overflow: 'auto', overflowX: "hidden" }}>
+                    <Grid item xs={12} sm={9} md={9} lg={9} style={{ maxHeight: "85vh", overflow: 'auto', overflowX: "hidden" }}>
                         <Grid container spacing={2} direction="row" justify="flex-start" alignItems="center">
                             {(filtered.length !== 0) ? filtered.map((car, index) => {
                                 return (

@@ -9,6 +9,7 @@ import RentalHistory from "../view/rentalHistory"
 import { TabPanel, a11yProps } from '../layout/Tabs'
 import { returnCar } from "../store/actions/rentalActions"
 import SearchCar from "../view/searchCar"
+import ParallaxCarousel from '../layout/ParallaxCarousel';
 
 const useStyles = theme => ({
     search: {
@@ -111,8 +112,8 @@ class SeachCar extends React.Component {
         if (cars && rental) {
             return (
                 <div>
-                    
-                    <Container >
+                    <ParallaxCarousel maxWidth='sm'/>
+                    <Container maxWidth='lg'>
                     <Tabs
                         orientation="horizontal"
                         value={tab}

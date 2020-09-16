@@ -16,6 +16,8 @@ import ColorLinearProgress from './components/layout/ColorLinearProgress'
 import thunk from 'redux-thunk';
 import rootReducer from './components/store/reducers/rootReducer'
 import ErrorHandler from './components/utils/ErrorHandler';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 const fbConfig = {
     apiKey: "AIzaSyB6_pMrQeJZUadK72Dy1ljfgYDu8jrf4jM",
@@ -64,9 +66,11 @@ const rrfProps = {
 ReactDOM.render(<Provider store={store}>
     <ReactReduxFirebaseProvider {...rrfProps}><div id='bckgrd' className='bckgrd'>
         <AuthIsLoaded><MuiThemeProvider>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
             {/* <ErrorHandler> */}
                 <App />
             {/* </ErrorHandler> */}
+            </MuiPickersUtilsProvider>
         </MuiThemeProvider>
         </AuthIsLoaded>
     </div></ReactReduxFirebaseProvider>

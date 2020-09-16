@@ -24,10 +24,10 @@ const Navbar = (props) => {
     return (
         <div >
             <AppBar position="fixed"
-                style={{ background: 'transparent', boxShadow: 'none' }}>
+                style={{ background: '#393e46', boxShadow: 'none' }}>
                 <Toolbar>
                     <Link to="/">
-                        <h3>IoT Final</h3>
+                        <img src='/logo.png' alt='logo' style={{paddingTop:'5px'}} height='65px'></img>
                     </Link>
                     <div className={classes.root} />
                     {links}
