@@ -20,7 +20,7 @@ def Facial_Encode():
     # make array of sample pictures with encodings
     
     dirname = os.path.dirname(__file__)
-    path = "/home/pi/IoT_Assignments/Assignment2/IoT_Assignment2/Authentication/known_people/"
+    path = "/home/pi/IoT_Assignments/IoT_Assignment2/Authentication/known_people/"
 
     # make an array of all the saved jpg files' paths
     list_of_files = [f for f in glob.glob(path+'*.jpg')]
@@ -41,7 +41,7 @@ def Facial_Encode():
 
         # Create array of known names
         names[i] = names[i].replace(
-            "/home/pi/IoT_Assignments/Assignment2/IoT_Assignment2/Authentication/known_people/", "")
+            "/home/pi/IoT_Assignments/IoT_Assignment2/Authentication/known_people/", "")
         names[i] = names[i].replace(".jpg", "")
         known_face_names.append(names[i])
 
@@ -154,6 +154,46 @@ def Uname_pass():
     password = getpass.getpass()
     return [username, password]
 
+######################### - - Take a picture - - ##############################
+def take_picture():
+# Initialize some variables
+    face_locations = []
+    face_encodings = []
+    face_names = []
+    process_this_frame = True
+    name = "unknown"
+
+    while True:
+        # Grab a single frame of video
+        ret, frame = video_capture.read()
+
+        # Resize frame of video to 1/4 size for faster face recognition processing
+        small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+
+        # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
+        rgb_small_frame = small_frame[:, :, ::-1]
+
+        # Only process every other frame of video to save time
+        if process_this_frame:
+            # Find all the faces and face encodings in the current frame of video
+            face_locations = face_recognition.face_locations(rgb_small_frame)
+            if bool(face_locations):
+                byte_im = cv2.imencode(".jpg",rgb_small_frame)[1]
+                byte_im = byte_im.tobytes()
+                return byte_im 
+            else:
+                print ("Please move your face closer")
+            
+        process_this_frame = not process_this_frame
+
+
+######################### - - Revert Bytes to  - - ##############################
+def decode (data):
+    data_encode = np.array(data)
+    str_encode = data_encode.tostring()
+    nparr = np.frombuffer(str_encode, np.uint8)
+    img_decode = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    cv2.imwrite("./haha.jpg", img_decode)
 
 ######################### - - Usage - - ##############################
 
