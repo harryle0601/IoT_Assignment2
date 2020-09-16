@@ -178,7 +178,7 @@ class IssueHistory extends React.Component {
                                                         <TableCell align='left' style={{ minWidth: 220 }} ><Box fontWeight='Bold'>Description</Box></TableCell>
                                                         <TableCell align='left'><Box fontWeight='Bold'>Report Date</Box></TableCell>
                                                         <TableCell align='left'><Box fontWeight='Bold'>Status</Box></TableCell>
-                                                        {currentUser.Role === "Admin" ? <TableCell align='right'></TableCell> : null}
+                                                        {/* {currentUser.Role === "Admin" ? <TableCell align='right'></TableCell> : null} */}
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
@@ -199,8 +199,8 @@ class IssueHistory extends React.Component {
                                                                 {currentUser.Role === "Admin" 
                                                                     ? <TableCell align='left'>{r.Resolved ? "Resolved" : "Not Resolve"} </TableCell>
                                                                     : <TableCell>{r.Resolved ? "Resolved" : <IconButton onClick={e => this.handleResolved(e, r)}><CheckIcon />Mark as Resolved</IconButton>}</TableCell>}
-                                                                {currentUser.Role === "Admin"
-                                                                    ? <TableCell><IconButton onClick={e => this.handleEdit(e, r)}><EditIcon />Edit</IconButton></TableCell> : null }
+                                                                {/* {currentUser.Role === "Admin"
+                                                                    ? <TableCell><IconButton onClick={e => this.handleEdit(e, r)}><EditIcon />Edit</IconButton></TableCell> : null } */}
                                                             </TableRow>
                                                         );
                                                     })}

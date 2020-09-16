@@ -203,7 +203,7 @@ class RentalHistory extends React.Component {
                                                             {currentUser.Role === "Admin" ? <TableCell align='left'><Box fontWeight='Bold'>{r.ReturnDate ? "Returned" : "Not Returned"}</Box></TableCell>
                                                                 : <TableCell align='left'>$ {(r.Car.Price).toLocaleString()}</TableCell>}
                                                             {currentUser.Role === "Admin"
-                                                                ? <TableCell><IconButton onClick={e => this.handleEdit(e, r)}><EditIcon />Edit</IconButton></TableCell>
+                                                                ? null // <TableCell><IconButton onClick={e => this.handleEdit(e, r)}><EditIcon />Edit</IconButton></TableCell>
                                                                 : <TableCell>{r.ReturnDate ? "Book Canceled" : <IconButton onClick={e => this.handleRemove(e, r)}><ClearIcon />Cancel</IconButton>}</TableCell>}
                                                         </TableRow>
                                                     );
