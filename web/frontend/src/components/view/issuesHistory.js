@@ -85,8 +85,6 @@ const useStyles = theme => ({
 const defaultSort = [
     { name: 'sortRentAsc', value: false, detail: 'Create Date Oldest' }
     , { name: 'sortRentDesc', value: false, detail: 'Create Date Latest' }
-    // , { name: 'sortReturnAsc', value: false, detail: 'Return Date Descending' }
-    // , { name: 'sortReturnDesc', value: false, detail: 'Return Date Descending' }
 ]
 
 class IssueHistory extends React.Component {
@@ -101,9 +99,9 @@ class IssueHistory extends React.Component {
         }
     }
 
-    handleResolve = (e, rental) => {
+    handleResolved = (e, rental) => {
         rental['Resolved'] = true
-        this.props.editIssue(rental)
+        this.props.resolveIssue(rental)
     }
 
     handleAvailableChange(event) {
@@ -178,7 +176,6 @@ class IssueHistory extends React.Component {
                                                         <TableCell align='left' style={{ minWidth: 220 }} ><Box fontWeight='Bold'>Description</Box></TableCell>
                                                         <TableCell align='left'><Box fontWeight='Bold'>Report Date</Box></TableCell>
                                                         <TableCell align='left'><Box fontWeight='Bold'>Status</Box></TableCell>
-                                                        {/* {currentUser.Role === "Admin" ? <TableCell align='right'></TableCell> : null} */}
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
@@ -199,8 +196,6 @@ class IssueHistory extends React.Component {
                                                                 {currentUser.Role === "Admin" 
                                                                     ? <TableCell align='left'>{r.Resolved ? "Resolved" : "Not Resolve"} </TableCell>
                                                                     : <TableCell>{r.Resolved ? "Resolved" : <IconButton onClick={e => this.handleResolved(e, r)}><CheckIcon />Mark as Resolved</IconButton>}</TableCell>}
-                                                                {/* {currentUser.Role === "Admin"
-                                                                    ? <TableCell><IconButton onClick={e => this.handleEdit(e, r)}><EditIcon />Edit</IconButton></TableCell> : null } */}
                                                             </TableRow>
                                                         );
                                                     })}

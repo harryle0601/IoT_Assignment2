@@ -29,7 +29,7 @@ export const editIssue = (issue) => {
 
 export const resolveIssue = (issue) => {
     return (dispatch, getState) => {
-        firebase.firestore().collection('issue').doc(issue.id).set({
+        firebase.firestore().collection('issues').doc(issue.id).set({
             Resolve: true,
         }, { merge: true }).then(() => {
             firebase.firestore().collection('cars').doc(issue.Car.id).set({
