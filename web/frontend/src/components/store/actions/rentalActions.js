@@ -6,7 +6,7 @@ export const addRental = (rental) => {
     return (dispatch, getState) => {
         firebase.firestore().collection('rental').add(rental).then(() => {
             firebase.firestore().collection('cars').doc(rental.Car.id).set({
-                Available: false,
+                Available: "renting",
             }, { merge: true })
             dispatch({ type: 'CREATE_RENTAL_SUCCESS' });
             window.location.reload()
@@ -35,7 +35,7 @@ export const returnCar = (rental, returnDate) => {
             ReturnDate: firebase.firestore.Timestamp.fromMillis(returnDate)
         }, { merge: true }).then(() => {
             firebase.firestore().collection('cars').doc(rental.Car.id).set({
-                Available: true,
+                Available: "Idle",
             }, { merge: true })
             dispatch({ type: 'RETURN_RENTAL_SUCCESS' });
         }).catch(err => {

@@ -1,9 +1,9 @@
 import React from "react";
 import { connect } from 'react-redux'
-import { Button, Dialog, DialogContent, DialogActions, DialogTitle, Grid } from '@material-ui/core';
+import { Button, Dialog, DialogContent, DialogActions, DialogTitle, Grid, TextField } from '@material-ui/core';
 import { withStyles } from "@material-ui/core/styles";
-import { addRental } from "../store/actions/rentalActions";
-import {  KeyboardDateTimePicker } from "@material-ui/pickers";
+import { addIssue } from "../store/actions/issueActions";
+
 const useStyles = theme => ({
     container: {
         display: 'flex',
@@ -40,8 +40,16 @@ class BookingDialog extends React.Component {
         super();
         this.state = {
             dialog: false,
-            bookDate: Date.now()
+            description: '',
+            summary: ''
         }
+    }
+
+    handleTextInput(e) {
+        console.log("text input of issue", e.target.id, e.target.value)
+        this.setState({
+            [e.target.id]: e.target.value
+        })
     }
 
     handleClickDialog = () => {
@@ -56,27 +64,25 @@ class BookingDialog extends React.Component {
         });
     };
 
-    handleBookCar = (e, car, currentUser, bookDate) => {
-        console.log(typeof bookDate)
-        this.props.bookCar({
-            Car: car,
-            RentDate: bookDate,
-            User: currentUser,
-            UID: currentUser.id
-        })
-        this.handleCloseDialog()
+    handleCreateIssue = (e, car) => {
+        if (this.state.summary !== '' && this.state.summary) {
+            this.props.createIssue({
+                Car: car,
+                Summary: this.state.summary,
+                Description: this.state.description,
+                Resolve: false
+            })
+            this.handleCloseDialog()
+        }     
     }
 
     render() {
         const { classes, car, currentUser } = this.props;
-        console.log("booking car", car)
         return (
             <div>
-                {car.Available === false
-                    ? <Button variant="contained" color="secondary" disable>Out of Stock</Button>
-                    : <Button variant="contained" color="secondary" onClick={this.handleClickDialog}>Book Now</Button>}
+                <Button variant="contained" color="secondary" onClick={this.handleClickDialog}>Report Issue</Button>
                 <Dialog
-                    style={{overflow:"hidden"}}
+                    style={{ overflow: "hidden" }}
                     fullWidth={true}
                     maxWidth={"md"}
                     open={this.state.dialog}
@@ -97,30 +103,47 @@ class BookingDialog extends React.Component {
                                 <Grid container justify="flex-start" style={{ width: 'fit-content' }}>
                                     <Grid item xs={12}><h5>Description:</h5></Grid>
                                     <Grid item xs={12}>{car.Brand + " " + car.Model + " " + car.Seats + " seats " + car.Color}</Grid>
-                                    <Grid item xs={6}><h5>Price per Hour:</h5></Grid>
-                                    <Grid item xs={6}><div style={{ textAlign: 'right', fontSize: '30px', fontFamily: 'bold' }}> ${car.Price} </div></Grid>
                                 </Grid>
-                                <h5>Booking Date:</h5>
-                                <KeyboardDateTimePicker
-                                    value={this.state.bookDate}
-                                    onChange={(value) => this.setState({ bookDate: value })}
-                                    label="Booking Date:"
-                                    onError={console.log}
-                                    minDate={new Date("2018-01-01T00:00")}
-                                    format="yyyy/MM/dd hh:mm a"
-                                />
+                                <Grid container justify="flex-start" style={{ width: 'fit-content' }}>
+                                    <TextField
+                                        id="summary"
+                                        label="Issue summary"
+                                        style={{ margin: 8 }}
+                                        value = {this.state.summary}
+                                        placeholder="Summary"
+                                        fullWidth onChange={this.handleTextInput.bind(this)}
+                                        margin="normal"
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid container justify="flex-start" style={{ width: 'fit-content' }}>
+                                    <TextField
+                                        id="description"
+                                        label="Issue detail description"
+                                        style={{ margin: 8 }}
+                                        value = {this.state.description}
+                                        placeholder="Detail Description"
+                                        fullWidth multiline onChange={this.handleTextInput.bind(this)}
+                                        margin="normal"
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                    />
+                                </Grid>
                             </DialogContent>
                             <Grid container justify='center'>
                             </Grid>
                         </Grid>
                         <Grid container
-                            justify="flex-end" style={{marginRight:"50px"}}>
+                            justify="flex-end" style={{ marginRight: "50px" }}>
                             <DialogActions>
                                 <Button autoFocus onClick={this.handleCloseDialog} color="primary">
                                     Cancel
                             </Button>
-                                <Button onClick={(e) => this.handleBookCar(e, car, currentUser, this.state.bookDate)} color="primary" autoFocus>
-                                    Book Now
+                                <Button onClick={(e) => this.handleCreateIssue(e, car, currentUser, this.state.bookDate)} color="primary" autoFocus>
+                                    Create Issue
                             </Button>
                             </DialogActions>
                         </Grid>
@@ -133,7 +156,7 @@ class BookingDialog extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        bookCar: (rental) => dispatch(addRental(rental))
+        createIssue: (issue) => dispatch(addIssue(issue))
     }
 }
 

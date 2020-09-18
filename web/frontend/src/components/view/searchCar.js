@@ -181,7 +181,6 @@ class SearchCar extends React.Component {
     render() {
         const { classes, cars, currentUser } = this.props;
         const { available, brand, minSeats, maxSeats, color, minPrice, maxPrice, sort } = this.state
-        console.log("car car car", cars)
         if (cars && currentUser) {
             var filters = getFilterTags(cars)
             var filtered = sortedByPrice(filteredList(cars, {
@@ -193,7 +192,6 @@ class SearchCar extends React.Component {
                 minPrice: minPrice,
                 maxPrice: maxPrice
             }), sort)
-            console.log("filter tags", filters)
             return (
                 <Grid container spacing={1}>
                     <Grid item xs={12} sm={3} md={3} lg={3}>

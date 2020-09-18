@@ -8,7 +8,7 @@ import { useN04TextInfoContentStyles } from '@mui-treasury/styles/textInfoConten
 import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
 import BookThisCarDialog from '../dialog/bookingDialog'
 import EditCarInfoDialog from '../dialog/editCarInfoDialog'
-
+import CreateIssueDialog from '../dialog/createIssueDialog'
 
 const useStyles = makeStyles(() => ({
     card: {
@@ -42,6 +42,7 @@ const CarCard = (props) => {
                         <div className="overlay" style={{ borderRadius: 16 }}>
                             { currentUser.Role !== "Admin" ? <BookThisCarDialog car={car} currentUser={currentUser}/>
                                                     : <EditCarInfoDialog car={car} currentUser={currentUser}/>}
+                            { currentUser.Role === "Admin" ? <CreateIssueDialog car={car} currentUser={currentUser}/> : null}
                         </div>
                     </div>
                 </div>

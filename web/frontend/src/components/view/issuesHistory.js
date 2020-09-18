@@ -8,7 +8,7 @@ import { fade, withStyles } from '@material-ui/core/styles'
 import EditIcon from '@material-ui/icons/Edit'
 import CheckIcon from '@material-ui/icons/Check'
 import DateTimePicker from 'react-datetime-picker';
-import { editIssue } from "../store/actions/issueActions"
+import { resolveIssue } from "../store/actions/issueActions"
 import { filteredList, sortedByCreateDate } from '../utils/IssueFilter'
 
 const useStyles = theme => ({
@@ -222,7 +222,7 @@ class IssueHistory extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        resolveIssue: (issue) => dispatch(editIssue(issue))
+        resolveIssue: (issue) => dispatch(resolveIssue(issue))
     }
 }
 

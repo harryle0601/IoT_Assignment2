@@ -1,7 +1,7 @@
 export const filteredList = (data, filter) => {
     var filtered = []
     data.forEach(doc => {
-        if (filter['available'] && !doc.Available) return
+        if (filter['available'] && doc.Available !== "Idle") return
         if (filter['brand'].length > 0 && !filter['brand'].includes(doc.Brand)) return
         if (doc.Seats < filter['minSeats'] && filter['minSeats'] !== undefined) return
         if (doc.Seats > filter['maxSeats'] && filter['maxSeats'] !== undefined) return

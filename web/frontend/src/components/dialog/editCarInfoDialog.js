@@ -103,10 +103,10 @@ class BookingDialog extends React.Component {
             var newCar = {
                 Available: (this.state.available ? this.state.available : this.props.car.Available),
                 Brand: (this.state.brand ? this.state.brand : this.props.car.Brand),
-                Seats: (this.state.seats ? this.state.seats : this.props.car.Seats),
+                Color: (this.state.color ? this.state.color : this.props.car.Color),
                 Model: (this.state.model ? this.state.model : this.props.car.Model),
-                Color: (this.state.color ? parseInt(this.state.color) : this.props.car.Color),
-                Price: (this.state.price ? parseInt(this.state.price) : this.props.car.Price),
+                Seats: (this.state.seats ? parseInt(this.state.seats) : parseInt(this.props.car.Seats)),
+                Price: (this.state.price ? parseInt(this.state.price) : parseInt(this.props.car.Price)),
                 Image: carImage
             }
             if (this.props.car) this.props.editCar(newCar, this.props.car.id)
