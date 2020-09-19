@@ -5,7 +5,7 @@ import { compose } from 'redux'
 import React from "react";
 import { fade, withStyles } from '@material-ui/core/styles'
 import { Chart } from "react-google-charts";
-import { carStatusPieChart } from '../utils/Statistic'
+import { carStatusPieChart, userGrowth } from '../utils/Statistic'
 
 const useStyles = theme => ({
     search: {
@@ -108,6 +108,18 @@ class ViewStatistics extends React.Component {
                         }}
                         rootProps={{ 'data-testid': '2' }}
                     />
+                    {console.log(userGrowth(users, 9))}
+                    <Chart
+                        chartType="Line"
+                        loader={<div>Loading Chart</div>}
+                        data={userGrowth(users, 9)}
+                        options={{
+                            chart: { title: 'User growth in last 9 days', },
+                            series: { 0: { axis: 'Users' } },
+                            axes: { y: { Users: { label: 'Users' } }, },
+                        }}
+                        rootProps={{ 'data-testid': '1' }}
+                    />
                 </div>
             );
         } else return (<div></div>)
@@ -139,7 +151,7 @@ export default compose(
             { collection: 'cars' },
             { collection: 'rental' },
             { collection: 'issues' },
-            { collection: 'users' }
+            { collection: 'users', queryParams: ['orderByChild=CreateDate'] }
         ]
     }),
 )(withStyles(useStyles)(ViewStatistics))

@@ -1,7 +1,6 @@
 import firebase from 'firebase/app';
 
 export const setRole = (user, role) => {
-
     return (dispatch, getState) => {
         if (role !== 'User') {
             firebase.firestore().collection('users').doc(user.id).update({

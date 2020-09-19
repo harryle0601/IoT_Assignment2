@@ -17,10 +17,16 @@ export const signInEmailPassword = (credentials) => {
 export const signInGmail = () => {
     return (dispatch, getState) => {
         firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(resp => {
-            firebase.firestore().collection('users').doc(resp.user.uid).set({
-                Email: resp.user.email
-            }, { merge: true });
-            dispatch({ type: 'LOGIN_SUCCESS' });
+            var docRef = firebase.firestore().collection('users').doc(resp.user.uid)
+            docRef.get().then((doc)=>{
+                var now = firebase.firestore.Timestamp.fromMillis(Date.now())
+                if (!doc.exists) {
+                    docRef.set({
+                        Email: resp.user.email,
+                        CreateDate: now
+                    }).then(()=>dispatch({ type: 'LOGIN_SUCCESS' }))
+                }
+            })  
         }).catch((err) => {
             dispatch({ type: 'LOGIN_ERROR', err });
         });
@@ -41,8 +47,10 @@ export const signUp = (newUser) => {
             newUser.email,
             newUser.password
         ).then(resp => {
+            var now = firebase.firestore.Timestamp.fromMillis(Date.now())
             return firebase.firestore().collection('users').doc(resp.user.uid).set({
-                Email: newUser.email
+                Email: newUser.email,
+                CreateDate: now
             });
         }).then(() => {
             dispatch({ type: 'SIGNUP_SUCCESS' });
@@ -58,7 +66,6 @@ export const fogotPassword = (email) => {
         firebase.auth().sendPasswordResetEmail(email).then(() => {
             dispatch({ type: 'SENT_PASSWORD_EMAIL' });
         }).catch(function (error) {
-            // An error happened.}
             dispatch({ type: 'SENT_PASSWORD_EMAIL_ERROR' });
         })
     }
