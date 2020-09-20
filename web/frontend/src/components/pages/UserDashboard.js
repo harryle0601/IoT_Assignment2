@@ -9,8 +9,11 @@ import RentalHistory from "../view/rentalHistory"
 import { TabPanel, a11yProps } from '../layout/Tabs'
 import { returnCar } from "../store/actions/rentalActions"
 import SearchCar from "../view/searchCar"
-import ParallaxCarousel from '../layout/ParallaxCarousel';
-
+import { containedTabsStylesHook } from '@mui-treasury/styles/tabs';
+import combineStyles from "../helper/combineStyles";
+import clsx from  'clsx';
+// const tabsStyles = containedTabsStylesHook
+// const tabItemStyles = containedTabsStylesHook
 const useStyles = theme => ({
     search: {
         marginTop: '3%',
@@ -41,9 +44,7 @@ const useStyles = theme => ({
         color: 'inherit',
         width: '85%',
     },
-    tabs: {
-        borderRight: `1px solid ${theme.palette.divider}`
-    },
+
     root: {
         display: 'flex',
         maxWidth: '500px',
@@ -112,17 +113,17 @@ class SeachCar extends React.Component {
         if (cars && rental) {
             return (
                 <div>
-                    <ParallaxCarousel maxWidth='sm'/>
+
                     <Container maxWidth='lg'>
                     <Tabs
                         orientation="horizontal"
                         value={tab}
                         onChange={this.handleTabChange}
-                        className={classes.tabs}
+                        style={{marginBottom:'30px'}}
                         justify="center"
                     >
-                        <Tab label="Search Car" {...a11yProps(0)} />
-                        <Tab label="Rental History" {...a11yProps(1)} />
+                        <Tab   label="Search Car" {...a11yProps(0)} />
+                        <Tab    label="Rental History" {...a11yProps(1)} />
                     </Tabs>
                     <div>
                         <TabPanel value={tab} index={0}>
@@ -166,3 +167,4 @@ export default compose(
         ]
     }),
 )(withStyles(useStyles)(SeachCar))
+

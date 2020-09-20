@@ -11,6 +11,8 @@ import UserDashboard from './components/pages/UserDashboard';
 import AdminDashboard from './components/pages/AdminDashboard';
 import EngineerDashboard from './components/pages/EngineerDashboard';
 import ManagerDashboard from './components/pages/ViewStats';
+import {HomePage} from "./components/pages/HomePage";
+import {NeptuneAppFooterDemo} from "./components/layout/Footer";
 
 class App extends Component {
     render() {
@@ -21,7 +23,7 @@ class App extends Component {
                     <Navbar currentUser={currentUser} currentUserRentalList={currentUserRentalList}/>
                     <div style={{ paddingTop: "100px"}}>
                         <Switch >
-                            <Route exact path="/" component={SignIn} />
+                            <Route exact path="/" component={HomePage} />
                             <Route exact path="/signin" component={SignIn} />
                             <Route exact path="/signup" component={SignUp} />
                             <Route path='/user' component={(props) => <UserDashboard {...props}/>} />
@@ -29,7 +31,8 @@ class App extends Component {
                             <Route path='/admin' component={(props) => <AdminDashboard {...props}/>}/>
                             <Route path='/manager' component={(props) => <ManagerDashboard {...props}/>} />
                         </Switch>
-                    </div>              
+                    </div>
+                    <NeptuneAppFooterDemo/>
                 </div>
             </BrowserRouter>
         );
