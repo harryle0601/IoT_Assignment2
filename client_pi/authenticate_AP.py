@@ -40,14 +40,14 @@ def QR_authentication():
         if key != "unknown":
             break
     
-    return key
+    return 'QR, ' + key
             
     
 ######################### - - Username Password - - ##############################
 def Uname_pass():
     username = input("Username: ")
     password = getpass.getpass()
-    return [username, password]
+    return 'UP, ' + username + ', ' + password
 
 ######################### - - Take a picture - - ##############################
 def take_picture():
@@ -75,7 +75,7 @@ def take_picture():
             if bool(face_locations):
                 byte_im = cv2.imencode(".jpg",rgb_small_frame)[1]
                 byte_im = byte_im.tobytes()
-                return byte_im 
+                return 'FR, ' + byte_im 
             else:
                 print ("Please move your face closer")
             
@@ -93,18 +93,22 @@ def decode (data):
 ######################### - - Usage - - ##############################
 
 def user_authentication():
-    opt = input("Please choose an unlock method \n 1.Facial Recognition \n 2.Username and Password \n")
+    opt = ''
+    while opt != 1 and opt != 2:
+        opt = input("Please choose an unlock method \n 1.Facial Recognition \n 2.Username and Password \n")
     if (opt == "1"):
         auth_data = take_picture()
-    elif (opt =="2"):
+    else:
         auth_data = Uname_pass()
 
     return auth_data
 
 def engineer_authentication():
-    opt = input("Please choose an unlock method \n 1.QR Scan \n 2.Bluetooth Scan \n")
+    opt = ''
+    while opt != 1 and opt != 2:
+        opt = input("Please choose an unlock method \n 1.QR Scan \n 2.Bluetooth Scan \n")
     if (opt == "1"):
         auth_data = QR_authentication()
-    elif (opt =="2"):
+    else:
         auth_data = bluetooth_authentication()
     return auth_data

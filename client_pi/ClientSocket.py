@@ -1,24 +1,20 @@
 import socket
 
-serverAddress = ''
-serverPort = 6600
+SERVER = '192.168.1.246'
+PORT = 5050
+HEADER = 64
+FORMAT = 'utf-8'
+DISCONNECT_MESSAGE = 'DISCONNECT'
+ADDR = (SERVER,PORT)
 
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client.connect((serverAddress, serverPort))
 
-def start_connection(command):
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.connect((serverAddress, serverPort))
-    while True:
-        in_data = client.recv(1024)
-        client.sendall(bytes(command), 'UTF-8')
-        if in_data == 'success':
-            # print car unlock to console
-            None
-            break
-        elif in_data == 'fail':
-            # retry prompt
-            None
-        elif in_data == 'goodbye':
-            # print goodbye to console or screen
-            None
-            break
-    client.close()
+def send_message(msg):
+    message = encode(FORMAT)
+    msg_length = len(message)
+    send_length = str(msg_length).encode(FORMAT)
+    send_length += b' ' * (HEADER - len(send_length))
+    client.send(send_length)
+    client.send(message)
+    

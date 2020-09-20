@@ -1,8 +1,9 @@
 import socket
 import threading
+import FirebaseApi as api
 
-host = ''
-port = 6600
+host = socket.gethostbyname(socket.gethostname())
+port = 6700
 
 
 class ClientThread(threading.Thread):
@@ -17,10 +18,11 @@ class ClientThread(threading.Thread):
         msg = ''
         while True:
             data = self.cSocket.recv(2048)
-            data = data.decode()
-            msg = data.split(' ', 1)
-            return_message = get_return_message(msg[0], msg[1])
-            self.cSocket.send(bytes(return_message, 'UTF-8'))
+            data = data.decode('utf-8')
+            print(data)
+            msg = data.split(', ', 1)
+            return_message = authenticate(msg[0], msg[1])
+            self.cSocket.send(bytes(return_message, 'utf-8'))
         print('client at: ' + self.cAddress, " disconnected")
 
 
@@ -42,6 +44,15 @@ def setup_connection(server):
     newThread.start()
     return conn
 
+def authenticate(command, data):
+    if command == 'UP':
+        data = data.split(', ')
+        uname = data[0]
+        pwd = data[1]
+        car_id = data[2]
+        result = api.authen_user_by_up(uname, pwd)
+        print(result)
+        return 'success'
 
 def get_return_message(command, userdata):
     return {
