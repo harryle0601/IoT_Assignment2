@@ -13,17 +13,26 @@ known_face_names = []
 
 
 def update_local_image_folder():
+    """
+        description : fetch all the users from firebase that has picture. Rename the picture and put in Face_Images dir
+        todo : check db for all user contain picture. download the picture, rename it to the user_id and place in Face_Image dir
+        return : void.
+    """
     user_list = api.get_user_images()
     image_path = os.path.join(cwd, 'Face_Images')
 
-    for id in user_list:
-        
-        if not os.path.exists(os.path.join(image_path, id + '.jpg')):
-            url = user_list[id]['Avatar']
-            urllib.request.urlretrieve(url, os.path.join(image_path, id + '.jpg'))
+    for user_id in user_list:
+        if not os.path.exists(os.path.join(image_path, user_id + '.jpg')):
+            url = user_list[user_id]['Avatar']
+            urllib.request.urlretrieve(url, os.path.join(image_path, user_id + '.jpg'))
 
 
 def facial_encode():
+    """
+        description : encode all the image in Face_Images dir
+        todo : Encode all image in Face_Images dir and save the encode on RAM
+        return : void.
+    """
     # make array of sample pictures with encodings
     global known_face_encodings, known_face_names
     dirname = os.path.dirname(__file__)
@@ -50,6 +59,11 @@ def facial_encode():
 
 
 def facial_authentication():
+    """
+        description : encode the image send from agent pi and compare it to the list of encoded image on RAM
+        todo : Encode image in check_faces dir and compare it to the encoded images in RAM. If match return the file name
+        return : string of a user_id.
+    """
     # Initialize some variables
     face_locations = []
     face_encodings = []
@@ -118,6 +132,11 @@ def facial_authentication():
 
 
 def decode (data):
+    """
+        description : decode the hex code of an image send from agent pi and save it to check_faces dir
+        todo : decode a hex coded image
+        return : void.
+    """
     if os.path.exists(os.path.join(cwd, 'check_faces/checkauth.jpg')):
         os.remove(os.path.join(cwd, 'check_faces/checkauth.jpg'))
     data_b = bytes.fromhex(data) 
@@ -129,6 +148,11 @@ def decode (data):
 
 
 def fr_wrapper(data):
+    """
+        description : basic wrapper to run all function in order and reset global variable when finish
+        todo : run other function in order
+        return : a string of an user_id.
+    """
     global known_face_encodings, known_face_names
     decode(data)
     update_local_image_folder()

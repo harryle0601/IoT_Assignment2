@@ -14,6 +14,11 @@ video_capture = cv2.VideoCapture(-1)
 ######################### - - Bluetooth Detection - - ##############################
 
 def bluetooth_authentication():
+    """
+        description: get all the bluetooth mac address near client pi
+        todo : discover all nearby device and return the list  of address to controller
+        return : authentication type and list of address
+    """
     print("performing inquiry...")
 
     nearby_devices = bluetooth.discover_devices(
@@ -21,15 +26,21 @@ def bluetooth_authentication():
 
     print("found %d devices" % len(nearby_devices))
 
-    for addr, name in nearby_devices:
-        try:
-            return addr
-        except UnicodeEncodeError:
-            print("  %s - %s" % (addr, name.encode('utf-8', 'replace')))
+    return 'BLT' + str(nearby_devices)
+    # for addr, name in nearby_devices:
+    #     try:
+    #         return addr
+    #     except UnicodeEncodeError:
+    #         print("  %s - %s" % (addr, name.encode('utf-8', 'replace')))
 
 ######################### - - QR Scanner - - ##############################
 
 def QR_authentication():
+    """
+        description: scan a qr code from camera
+        todo : scan a qr code and decode the qr to string
+        return : authentication type and string message
+    """
     while True:
         _, frame = video_capture.read()
         key ="unknown"
@@ -45,12 +56,22 @@ def QR_authentication():
     
 ######################### - - Username Password - - ##############################
 def Uname_pass():
-    username = input("Username: ")
-    password = getpass.getpass()
+    """
+        description: get input from user for username and password
+        todo : get input from user
+        return : authentication type and combine string of username and password
+    """
+    username = input("Username: \n")
+    password = getpass.getpass('Password: \n')
     return 'UP, ' + username + ', ' + password
 
 ######################### - - Take a picture - - ##############################
 def take_picture():
+    """
+        description: take a picture and convert it to hex code to send to master pi
+        todo : take picture and convert to hex code
+        return : authentication type and hex code of the image
+    """
 # Initialize some variables
     face_locations = []
     face_encodings = []
@@ -93,11 +114,15 @@ def decode (data):
 ######################### - - Usage - - ##############################
 
 def user_authentication():
+    """
+        description: controller for all function related to user
+        todo : input from user for user function
+        return : data return from function call
+    """
     opt = ''
     while opt != "1" and opt != "2":
         opt = input("Please choose an unlock method \n 1.Facial Recognition \n 2.Username and Password \n")
-    if (opt == "1"):
-       
+    if opt == "1":
         auth_data = take_picture()
     else:
         auth_data = Uname_pass()
@@ -105,10 +130,15 @@ def user_authentication():
     return auth_data
 
 def engineer_authentication():
+    """
+            description: controller for all function related to engineer
+            todo : input from user for engineer function
+            return : data return from function call
+        """
     opt = ''
     while opt != "1" and opt != "2":
         opt = input("Please choose an unlock method \n 1.QR Scan \n 2.Bluetooth Scan \n")
-    if (opt == "1"):
+    if opt == "1":
         auth_data = QR_authentication()
     else:
         auth_data = bluetooth_authentication()
