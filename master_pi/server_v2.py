@@ -1,5 +1,7 @@
 import socket
 import threading
+import master_pi.Firebase_authen as email_auth
+import master_pi.FirebaseApi as api
 
 SERVER = ''
 PORT = 6700
@@ -40,13 +42,32 @@ def start():
         
 def authenticate(command, data):
     if command == 'UP':
-        data = data.split(', ')
-        uname = data[0]
-        pwd = data[1]
-        car_id = data[2]
-        result = api.authen_user_by_up(uname, pwd)
-        print(result)
-        return 'success'
+        return email_pass_auth(data)
+
+def email_pass_auth(data):
+    data = data.split(', ')
+    uname = data[0]
+    pwd = data[1]
+    car_id = data[2]
+    result = email_auth.auth_user_by_email_password(uname, pwd)
+    if result:
+        rental_status = api.get_rental_status(car_id, result)
+        if rental_status:
+            return 'SUCCESS, ' + str(api.get_car(car_id))
+        else:
+            return 'FAIL RENTAL, WRONG CAR'
+    else:
+        return 'FAIL'
+
+def qr_auth(data):
+    data = data.split(', ')
+    uid = data[0]
+    car_id = data[1]
+    result = api.get_user(uid)
+    if result:
+        return 'SUCCESS, ' + api.get_car_detail(car_id)
+    else:
+        return 'FAIL, invalid qr code'
 
 print('[STARTING] server is starting...')
 start()
