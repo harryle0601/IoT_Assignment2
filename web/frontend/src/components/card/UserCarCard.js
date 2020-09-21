@@ -1,7 +1,8 @@
 import React from 'react';
 import cx from 'clsx';
+import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/styles';
-import { Card, CardContent, CardMedia } from '@material-ui/core';
+import { Card, CardContent, CardMedia, Button } from '@material-ui/core';
 import TextInfoContent from '@mui-treasury/components/content/textInfo';
 import { useFourThreeCardMediaStyles } from '@mui-treasury/styles/cardMedia/fourThree';
 import { useN04TextInfoContentStyles } from '@mui-treasury/styles/textInfoContent/n04';
@@ -9,6 +10,7 @@ import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
 import BookThisCarDialog from '../dialog/bookingDialog'
 import EditCarInfoDialog from '../dialog/editCarInfoDialog'
 import CreateIssueDialog from '../dialog/createIssueDialog'
+import { removeCar } from '../store/actions/carActions'
 
 const useStyles = makeStyles(() => ({
     card: {
@@ -27,7 +29,7 @@ const CarCard = (props) => {
     const mediaStyles = useFourThreeCardMediaStyles();
     const textCardContentStyles = useN04TextInfoContentStyles();
     const shadowStyles = useOverShadowStyles({ inactive: false });
-    const { car, currentUser } = props
+    const { car, currentUser,  } = props
 
     return (
         <Card className={cx(classes.root, shadowStyles.root)} style={{ position: "relative", marginBottom: '10px', borderRadius: 16 }}>
@@ -43,6 +45,7 @@ const CarCard = (props) => {
                             { currentUser.Role !== "Admin" ? <BookThisCarDialog car={car} currentUser={currentUser}/>
                                                     : <EditCarInfoDialog car={car} currentUser={currentUser}/>}
                             { currentUser.Role === "Admin" ? <CreateIssueDialog car={car} currentUser={currentUser}/> : null}
+                            { currentUser.Role === "Admin" ? <Button variant="contained" color="secondary" onClick={() => props.removeCar(car.id)}>Remove Car</Button> : null}
                         </div>
                     </div>
                 </div>
@@ -56,4 +59,11 @@ const CarCard = (props) => {
     );
 };
 
-export default CarCard
+const mapDispatchToProps = (dispatch) => {
+    return {
+        removeCar: (carId) => dispatch(removeCar(carId))
+    }
+}
+
+
+export default connect(null, mapDispatchToProps)(CarCard)

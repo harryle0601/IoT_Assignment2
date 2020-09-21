@@ -26,7 +26,7 @@ export const editCar = (car, id) => {
 
 export const removeCar = (id) => {
     return (dispatch, getState) => {
-        firebase.firestore().collection('cars').doc(id).remove()
+        firebase.firestore().collection('cars').doc(id).delete()
             .then(() => {
                 dispatch({ type: 'REMOVE_CAR_SUCCESS' });
             }).catch(err => {

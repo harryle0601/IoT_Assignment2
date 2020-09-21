@@ -7,7 +7,7 @@ export const addRental = (rental) => {
     return (dispatch, getState) => {
         firebase.firestore().collection('rental').add(rental).then(() => {
             firebase.firestore().collection('cars').doc(rental.Car.id).set({
-                Available: "renting",
+                Available: "Renting",
             }, { merge: true })
             var eventDate2 = eventDate
             eventDate2.setDate(eventDate2.getDate() + 1)
