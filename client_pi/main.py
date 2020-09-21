@@ -16,3 +16,6 @@ def main_wrapper():
     command = command + ', ' + data + ', ' + CAR_ID
     
     return_data = cs.send_message(command)
+
+while True:
+    main_wrapper()
