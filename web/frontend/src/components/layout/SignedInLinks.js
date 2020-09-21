@@ -7,7 +7,6 @@ import Grid from '@material-ui/core/Grid';
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import Notifications from "@material-ui/icons/Notifications";
 import Button from "@material-ui/core/Button";
 import Badge from '@material-ui/core/Badge';
 import { useSizedIconButtonStyles } from '@mui-treasury/styles/iconButton/sized';
@@ -30,7 +29,7 @@ export function UserMenu(props) {
     return (
         <div>
             <IconButton classes={large} onClick={(e) => handleClick(e)}>
-                <Avatar src={props.currentUser ? props.currentUser.logo : null} />
+                <Avatar src={props.currentUser ? props.currentUser.Avatar ? props.currentUser.Avatar : null : null} />
             </IconButton>
             <Menu
                 id="long-menu"

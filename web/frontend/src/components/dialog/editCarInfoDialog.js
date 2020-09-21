@@ -41,7 +41,7 @@ class BookingDialog extends React.Component {
         super();
         this.state = {
             dialog: false,
-            available: true,
+            available: "Idle",
             brand: '',
             seats: '',
             model: '',
@@ -66,12 +66,6 @@ class BookingDialog extends React.Component {
         }
     }
 
-    validation() {
-        if (this.state.brand === "" || this.state.seats === "" || this.state.color === "" || this.state.price === "" || this.state.model === "") 
-            return false
-        return true
-    }
-
     handleClickDialog(e) {
         this.setState({ dialog: true })
     }
@@ -82,14 +76,12 @@ class BookingDialog extends React.Component {
 
     handleSubmit = (e) => {
         e.preventDefault()
-        if (this.validation()) {
-            this.props.uploadToStorage({
-                image: this.state.carImg,
-                path: "/cars/"})
-            this.setState({
-                isUploading: true
-            })
-        }
+        this.props.uploadToStorage({
+            image: this.state.carImg,
+            path: "/cars/"})
+        this.setState({
+            isUploading: true
+        })
     }
 
     componentDidUpdate(prevProp, prevState) {

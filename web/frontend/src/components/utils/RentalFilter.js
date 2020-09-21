@@ -4,8 +4,6 @@ export const filteredList = (data, filter) => {
         if (filter['status'] && doc.ReturnDate) return
         if (filter['fromDate'] !== undefined && doc.RentDate < filter['fromDate']) return
         if (filter['toDate'] !== undefined && doc.RentDate > filter['toDate']) return
-        // if (doc.ReturnDate < filter['fromDate'] && filter['fromDate'] !== undefined) return
-        // if (doc.ReturnDate > filter['toDate'] && filter['toDate'] !== undefined) return
         filtered = filtered.concat(doc)
     });
     return filtered

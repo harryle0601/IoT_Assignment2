@@ -7,7 +7,7 @@ export const uploadToStorage = (file) => {
         if (!file.image) 
             dispatch({ type: 'NO_CHANGE_IMAGE' })
         else {
-            const uploadTask = storageRef.ref(`${file.path + file.image.name}`).put(file.image);
+            const uploadTask = storageRef.ref(`${token + file.path + file.image.name}`).put(file.image);
             uploadTask.on('state_changed',
                 (snapshot) => {
                     // progress function ....
