@@ -41,7 +41,7 @@ class BookingDialog extends React.Component {
         super();
         this.state = {
             dialog: false,
-            available: true,
+            available: "Idle",
             brand: '',
             seats: '',
             model: '',
