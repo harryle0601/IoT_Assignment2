@@ -9,12 +9,22 @@ users_collection = db.collection('users')
 issues_collection = db.collection('issues')
 rental_collection = db.collection('rental')
 
+
 def get_engineer_by_id(uid):
     try:
         engineer = users_collection.document(uid).get()
         return engineer.to_dict()
     except Exception as e:
         print(e)
+
+
+def get_engineer_by_mac(mac):
+    try:
+        engineer = users_collection.where('MAC', '==', mac).get()
+        return engineer.to_dict()
+    except Exception as e:
+        print(e)
+
 
 def get_user_images():
     list_of_user = {}
@@ -30,6 +40,7 @@ def get_user_images():
     except Exception as e:
         print(e)
 
+
 def get_car_detail(car_id):
     active_issues = []
     try:
@@ -37,6 +48,8 @@ def get_car_detail(car_id):
         for issue in issues:
             if issue.to_dict()['Resolve'] != 'true':
                 active_issues.append(issue.to_dict())
+        if len(active_issues) == 0:
+            return get_car(car_id)
         return active_issues
     except Exception as e:
         print(e)
@@ -54,17 +67,18 @@ def get_car(car_id):
         return car.to_dict()
     except Exception as e:
         return f"An Error Occurred: {e}"
-    
+
+
 def get_rental_status(car_id, uid):
     try:
-        rentals = rental_collection.where('UID', '==', uid).get()
+        rentals = rental_collection.where('Car.id', '==', car_id).where('UID', '==', uid).get()
         if len(rentals) == 0:
             return False
         else:
             for rental in rentals:
                 rental = rental.to_dict()
-                if not rental['ReturnDate'] and rental['Car']['id'] == car_id:
-                    return True
+                if 'ReturnDate' not in rental:
+                    return rental
             return False
     except Exception as e:
         return f"An Error Occurred: {e}"

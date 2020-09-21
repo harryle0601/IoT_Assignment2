@@ -11,6 +11,7 @@ CAR_ID = "0"
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(ADDR)
 
+
 def send_message(msg):
     message = msg.encode(FORMAT)
     msg_length = len(message)
@@ -18,5 +19,16 @@ def send_message(msg):
     send_length += b' ' * (HEADER - len(send_length))
     client.send(send_length)
     client.send(message)
+    receive_message()
 
-send_message('UP, email@email.com, password, 0')
+def receive_message():
+    msg_length = client.recv(HEADER).decode(FORMAT)
+    if msg_length:
+        msg_length = int(msg_length)
+        msg = client.recv(msg_length).decode(FORMAT)
+        print(msg)
+
+def change_car_id(car_id):
+    global CAR_ID
+    CAR_ID = car_id
+

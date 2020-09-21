@@ -3,14 +3,13 @@ import face_recognition
 import cv2
 import numpy as np
 import glob
-import sys
-#import numpy as np
 import urllib.request
 import os
 import FirebaseApi as api
 
 cwd = os.getcwd()
-
+known_face_encodings = []
+known_face_names = []
 
 
 def update_local_image_folder():
@@ -21,14 +20,12 @@ def update_local_image_folder():
             url = user_list[id]['Avatar']
             urllib.request.urlretrieve(url, os.path.join(image_path, id + '.jpg'))
 
-known_face_encodings = []
-known_face_names = []
-def Facial_Encode():
-    # make array of sample pictures with encodings
-    
-    dirname = os.path.dirname(__file__)
-    path = "/home/pi/IoT_Assignments/IoT_Assignment2/Authentication/known_people/"
 
+def facial_encode():
+    # make array of sample pictures with encodings
+    global known_face_encodings, known_face_names
+    dirname = os.path.dirname(__file__)
+    path = os.path.join(cwd, 'Face_Images')
     # make an array of all the saved jpg files' paths
     list_of_files = [f for f in glob.glob(path+'*.jpg')]
     # find number of known faces
@@ -37,8 +34,6 @@ def Facial_Encode():
     names = list_of_files.copy()
     print(names)
 
-
-    
     for i in range(number_files):
         globals()['image_{}'.format(i)] = face_recognition.load_image_file(
             list_of_files[i])
@@ -47,14 +42,14 @@ def Facial_Encode():
         known_face_encodings.append(globals()['image_encoding_{}'.format(i)])
 
         # Create array of known names
-        names[i] = names[i].replace(
-            "/home/pi/IoT_Assignments/IoT_Assignment2/Authentication/known_people/", "")
+        names[i] = names[i].replace(str(os.path.join(cwd, 'Face_Images')), "")
         names[i] = names[i].replace(".jpg", "")
         known_face_names.append(names[i])
 
     print(names)
 
-def Facial_Authentication():
+
+def facial_authentication():
     # Initialize some variables
     face_locations = []
     face_encodings = []
@@ -63,10 +58,9 @@ def Facial_Authentication():
     name = "unknown"
 
     while True:
+        global known_face_names, known_face_encodings
         # Grab a single frame of video
         ret, frame = cv2.imread("./check_faces/checkauth.jpg")
-
-       
 
         # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
         rgb_small_frame = frame[:, :, ::-1]
@@ -121,6 +115,7 @@ def Facial_Authentication():
 
     return name
 
+
 def decode (data):
     data_b = bytes.fromhex(data) 
     data_encode = np.array(data_b)
@@ -128,3 +123,18 @@ def decode (data):
     nparr = np.frombuffer(str_encode, np.uint8)
     img_decode = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     cv2.imwrite("./check_faces/checkauth.jpg", img_decode)
+
+
+def fr_wrapper(data):
+    global known_face_encodings, known_face_names
+    decode(data)
+    update_local_image_folder()
+    facial_encode()
+    user_id = facial_authentication()
+    known_face_encodings = []
+    known_face_names = []
+    if user_id:
+        return user_id
+    else:
+        return 'FAIL, face not recognized'
+
