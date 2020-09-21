@@ -75,7 +75,7 @@ def take_picture():
             if bool(face_locations):
                 byte_im = cv2.imencode(".jpg",rgb_small_frame)[1]
                 byte_im = byte_im.tobytes()
-                return 'FR, ' + byte_im 
+                return 'FR, ' + str(byte_im.hex())
             else:
                 print ("Please move your face closer")
             
@@ -94,7 +94,7 @@ def decode (data):
 
 def user_authentication():
     opt = ''
-    while opt != 1 and opt != 2:
+    while opt != "1" and opt != "2":
         opt = input("Please choose an unlock method \n 1.Facial Recognition \n 2.Username and Password \n")
     if (opt == "1"):
         auth_data = take_picture()
@@ -105,7 +105,7 @@ def user_authentication():
 
 def engineer_authentication():
     opt = ''
-    while opt != 1 and opt != 2:
+    while opt != "1" and opt != "2":
         opt = input("Please choose an unlock method \n 1.QR Scan \n 2.Bluetooth Scan \n")
     if (opt == "1"):
         auth_data = QR_authentication()
