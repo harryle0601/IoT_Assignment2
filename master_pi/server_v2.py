@@ -27,7 +27,8 @@ def handle_client(conn, addr):
             msg = msg.split(', ', 1)
             if msg[0] == DISCONNECT_MESSAGE:
                 connected = False
-            return_msg_to_client(authenticate(msg[0], msg[1]))
+            result = authenticate(msg[0], msg[1])
+            return_msg_to_client(conn, result)
     conn.close()
         
 def recv_all(conn, msg_length):

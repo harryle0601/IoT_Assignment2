@@ -25,8 +25,17 @@ def receive_message():
     msg_length = client.recv(HEADER).decode(FORMAT)
     if msg_length:
         msg_length = int(msg_length)
-        msg = client.recv(msg_length).decode(FORMAT)
+        msg = recv_all(client, msg_length).decode(FORMAT)
         print(msg)
+        
+def recv_all(conn, msg_length):
+    data = bytearray()
+    while len(data) < msg_length:
+        package = conn.recv(msg_length - len(data))
+        if not package:
+            return None
+        data.extend(package)
+    return data
 
 def change_car_id(car_id):
     global CAR_ID
