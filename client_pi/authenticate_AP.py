@@ -75,7 +75,7 @@ def take_picture():
             if bool(face_locations):
                 byte_im = cv2.imencode(".jpg",rgb_small_frame)[1]
                 byte_im = byte_im.tobytes()
-                return 'FR, ' + byte_im 
+                return 'FR, ' + str(byte_im.hex())
             else:
                 print ("Please move your face closer")
             

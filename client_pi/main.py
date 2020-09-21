@@ -1,10 +1,10 @@
 import authenticate_AP as ap
 import ClientSocket as cs
 
-car_id = 0
+CAR_ID = "0"
 
 def main_wrapper():
-    global car_id
+    global CAR_ID
     opt = ''
     while opt != 1 and opt != 2:
         opt = input('Please select usage type:\n1.Customer\n2.Engineer')
@@ -13,6 +13,6 @@ def main_wrapper():
     else:
         command, data = ap.engineer_authentication()
         
-    command = command + ', ' + data + ', ' + car_id
+    command = command + ', ' + data + ', ' + CAR_ID
     
     return_data = cs.send_message(command)

@@ -1,12 +1,12 @@
 import socket
 
-SERVER = '192.168.1.246'
+SERVER = '192.168.137.143'
 PORT = 6700
 HEADER = 64
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = 'DISCONNECT'
 ADDR = (SERVER, PORT)
-CAR_ID = "0"
+
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(ADDR)
