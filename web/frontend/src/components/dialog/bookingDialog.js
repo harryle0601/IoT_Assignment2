@@ -70,7 +70,6 @@ class BookingDialog extends React.Component {
 
     render() {
         const { classes, car, currentUser } = this.props;
-        console.log("booking car", car)
         return (
             <div>
                 {car.Available !== "Idle"

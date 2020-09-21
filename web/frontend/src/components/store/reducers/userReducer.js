@@ -8,6 +8,12 @@ const userReducer = (state = initState, action) => {
         case 'SET_ROLE_ERROR':
             console.log('set role fail');
             return { ...state };
+        case 'EDIT_PROFILE_SUCCESS':
+            console.log('EDIT  profile success');
+            return { ...state };
+        case 'EDIT_PROFILE_ERROR':
+            console.log('edit profile fail');
+            return { ...state };
         default:
             return state;
     }

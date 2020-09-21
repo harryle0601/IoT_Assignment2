@@ -88,8 +88,10 @@ class BookingDialog extends React.Component {
         console.log("open prevpreisa sate", this.props.car, this.state.isUploading)
         if (this.props.carImg && this.state.isUploading) {
             var carImage = this.props.carImg
-            if (carImage === "https://firebasestorage.googleapis.com/v0/b/iotassignment2-d4c67.appspot.com/o/cars%2Fno-image.png?alt=media&token=c82408de-0396-4c2f-b0a3-1cc5fd127215" && this.props.car.Image) {
-                carImage = this.props.car.Image
+            if (carImage === "https://firebasestorage.googleapis.com/v0/b/iotassignment2-d4c67.appspot.com/o/cars%2Fno-image.png?alt=media&token=c82408de-0396-4c2f-b0a3-1cc5fd127215"){
+                if (this.props.car && this.props.car.Image) {
+                    carImage = this.props.car.Image
+                }
             }
 
             var newCar = {
