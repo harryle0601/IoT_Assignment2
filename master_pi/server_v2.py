@@ -1,8 +1,8 @@
 import socket
 import threading
-import master_pi.Firebase_authen as email_auth
-import master_pi.FirebaseApi as api
-import master_pi.Facial_Authen as fauth
+import Firebase_authen as email_auth
+import FirebaseApi as api
+import Facial_Authen as fauth
 
 SERVER = ''
 PORT = 6700
