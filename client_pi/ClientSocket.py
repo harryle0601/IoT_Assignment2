@@ -1,6 +1,6 @@
 import socket
 
-SERVER = '192.168.137.143'
+SERVER = '192.168.1.245'
 PORT = 6700
 HEADER = 64
 FORMAT = 'utf-8'
@@ -18,6 +18,7 @@ def send_message(msg):
     send_length = str(msg_length).encode(FORMAT)
     send_length += b' ' * (HEADER - len(send_length))
     client.send(send_length)
+    print (msg_length)
     client.send(message)
     receive_message()
 

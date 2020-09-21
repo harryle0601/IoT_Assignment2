@@ -67,7 +67,7 @@ def take_picture():
 
         # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
         rgb_small_frame = small_frame[:, :, ::-1]
-
+       
         # Only process every other frame of video to save time
         if process_this_frame:
             # Find all the faces and face encodings in the current frame of video
@@ -97,6 +97,7 @@ def user_authentication():
     while opt != "1" and opt != "2":
         opt = input("Please choose an unlock method \n 1.Facial Recognition \n 2.Username and Password \n")
     if (opt == "1"):
+       
         auth_data = take_picture()
     else:
         auth_data = Uname_pass()
