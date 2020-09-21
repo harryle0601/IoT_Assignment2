@@ -124,7 +124,7 @@ class SignUp extends Component {
             /></div>
                 return (
                     
-                    <Container style={{ marginTop: "2%", width: "550px",marginBottom:'100px' }}>
+                    <Container style={{ marginTop: "2%", width: "500px",marginBottom:'100px' }}>
                     
                                     
                                     <CardLight renderui ={renderui}/>
@@ -132,20 +132,30 @@ class SignUp extends Component {
                 )
             case 2:
                 return (
-                    <Confirm
+                    <Container style={{ marginTop: "2%", width: "500px",marginBottom:'100px' }}>
+                    
+                                    
+                                    <CardLight renderui ={<Confirm
                         nextStep={this.nextStep}
                         prevStep={this.prevStep}
                         handleChange={this.handleChange}
                         handleSubmit={this.handleSubmit}
                         values={values}
                         error={error}
-                    />
+                    /> }/>
+                   
+                    </Container>
                 )
             case 3:
                 return (
-                    <Success
+                    <Container style={{ marginTop: "2%", width: "500px",marginBottom:'100px' }}>
+                    
+                                    
+                    <CardLight renderui ={ <Success
                         prevStep={this.prevStep}
-                    />
+                    />}/>
+                   
+                    </Container>
                 )
         }
     }

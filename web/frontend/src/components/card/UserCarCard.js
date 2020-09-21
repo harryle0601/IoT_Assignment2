@@ -5,7 +5,7 @@ import { Card, CardContent, CardMedia } from '@material-ui/core';
 import TextInfoContent from '@mui-treasury/components/content/textInfo';
 import { useFourThreeCardMediaStyles } from '@mui-treasury/styles/cardMedia/fourThree';
 import { useN04TextInfoContentStyles } from '@mui-treasury/styles/textInfoContent/n04';
-import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
+import { useLightTopShadowStyles } from '@mui-treasury/styles/shadow/lightTop';
 import BookThisCarDialog from '../dialog/bookingDialog'
 import EditCarInfoDialog from '../dialog/editCarInfoDialog'
 import CreateIssueDialog from '../dialog/createIssueDialog'
@@ -26,11 +26,11 @@ const CarCard = (props) => {
     const classes = useStyles();
     const mediaStyles = useFourThreeCardMediaStyles();
     const textCardContentStyles = useN04TextInfoContentStyles();
-    const shadowStyles = useOverShadowStyles({ inactive: false });
+    const shadowStyles = useLightTopShadowStyles({ inactive: false });
     const { car, currentUser } = props
 
     return (
-        <Card className={cx(classes.root, shadowStyles.root)} style={{ position: "relative", marginBottom: '10px', borderRadius: 16 }}>
+        <Card className={cx(classes.root, shadowStyles.root)} style={{ position: "relative", marginBottom: '10px', borderRadius: 0 }}>
             <CardContent className={classes.content}>
                 <div style={{ marginTop: "2%" }}>
                     <div className='image'>
