@@ -1,15 +1,30 @@
 import firebase from 'firebase/app';
+import createEvent from '../../../apiGoogleCalendar'
 
 export const addRental = (rental) => {
-    console.log(rental.RentDate)
+    var eventDate = new Date(rental.RentDate)
     rental.RentDate = firebase.firestore.Timestamp.fromMillis(rental.RentDate);
     return (dispatch, getState) => {
         firebase.firestore().collection('rental').add(rental).then(() => {
             firebase.firestore().collection('cars').doc(rental.Car.id).set({
                 Available: "renting",
             }, { merge: true })
-            dispatch({ type: 'CREATE_RENTAL_SUCCESS' });
-            window.location.reload()
+            var eventDate2 = eventDate
+            eventDate2.setDate(eventDate2.getDate() + 1)
+            createEvent({
+                summary: "Rent " + rental.Car.Brand + " " + rental.Car.Model + " " + rental.Car.Color,
+                description: "Rent " + rental.Car.Brand + " " + rental.Car.Model + " " + rental.Car.Color,
+                start: {
+                    dateTime: eventDate
+                },
+                end: {
+                    dateTime: eventDate2
+                }
+            }).then((result) => {
+                console.log(result)
+                dispatch({ type: 'CREATE_RENTAL_SUCCESS' });
+                window.location.reload()
+            })
         }).catch(err => {
             dispatch({ type: 'CREATE_RENTAL_ERROR' }, err);
         });

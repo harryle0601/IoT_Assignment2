@@ -1,4 +1,5 @@
 import firebase from 'firebase/app';
+import ApiCalendar from '../../../apiGoogleCalendar'
 
 export const signInEmailPassword = (credentials) => {
     return (dispatch, getState) => {
@@ -24,7 +25,9 @@ export const signInGmail = () => {
                     docRef.set({
                         Email: resp.user.email,
                         CreateDate: now
-                    }).then(()=>dispatch({ type: 'LOGIN_SUCCESS' }))
+                    }).then(()=>{
+                        dispatch({ type: 'LOGIN_SUCCESS' });
+                    })
                 }
             })  
         }).catch((err) => {
