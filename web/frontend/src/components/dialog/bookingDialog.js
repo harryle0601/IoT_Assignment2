@@ -72,7 +72,7 @@ class BookingDialog extends React.Component {
         console.log("booking car", car)
         return (
             <div>
-                {car.Available === false
+                {car.Available !== "Idle"
                     ? <Button variant="contained" color="secondary" disable>Out of Stock</Button>
                     : <Button variant="contained" color="secondary" onClick={this.handleClickDialog}>Book Now</Button>}
                 <Dialog

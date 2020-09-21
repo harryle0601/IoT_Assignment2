@@ -50,10 +50,12 @@ export const signUp = (newUser) => {
             var now = firebase.firestore.Timestamp.fromMillis(Date.now())
             return firebase.firestore().collection('users').doc(resp.user.uid).set({
                 Email: newUser.email,
-                CreateDate: now
+                CreateDate: now,
+                Avatar: newUser.avatar
+            }).then((doc) => {
+                console.log(doc)
+                dispatch({ type: 'SIGNUP_SUCCESS' });
             });
-        }).then(() => {
-            dispatch({ type: 'SIGNUP_SUCCESS' });
         }).catch((err) => {
             console.log(err.message)
             dispatch({ type: 'SIGNUP_ERROR', err });

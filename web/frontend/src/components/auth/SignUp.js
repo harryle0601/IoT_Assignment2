@@ -64,12 +64,10 @@ class SignUp extends Component {
         e.preventDefault();
         const { avatarImg } = this.state;
         if (avatarImg !== undefined && avatarImg !== null) {
-            // need a image and a path
             const file = {
                 image: avatarImg,
                 path: '/users/'
             }
-            // new upload
             this.props.uploadToStorage(file)
         }
     }
@@ -94,7 +92,7 @@ class SignUp extends Component {
     render() {
         console.log(this.state)
         const { step, firstName, lastName, email, password, rePassword, image, url, progress } = this.state;
-        const { auth, authError, currentUser } = this.props;
+        const { auth, authError, currentUser, avatar } = this.props;
         const values = { firstName, lastName, email, password, rePassword, image, url, progress }
         const { firstNameError, lastNameError, emailError, passwordError, rePasswordError, avatarImgError  } = this.state
         const error = { firstNameError, lastNameError, emailError, passwordError, rePasswordError, avatarImgError }
@@ -137,14 +135,14 @@ class SignUp extends Component {
 const mapStateToProps = (state, ownProps) => {
     const url = state.uploadReducer.url ? state.uploadReducer.url : null
     if (url !== undefined && url !== null) 
-        if (url.path === '/images/avatar/') 
-            sessionStorage.setItem("avatar", url.url);
+        if (url.path === '/users/') 
+            sessionStorage.setItem("userAvatar", url.url);
     
     return {
         auth: state.firebase.auth,
         authError: state.auth.authError,
         progress: state.uploadReducer.progress,
-        avatar: sessionStorage.getItem("avatar")
+        avatar: sessionStorage.getItem("userAvatar")
     }
 }
 
