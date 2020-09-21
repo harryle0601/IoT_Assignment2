@@ -7,6 +7,20 @@ import FormSignUp from './FormSignUp'
 import Confirm from './Confirmation'
 import Success from './Success'
 import { uploadToStorage } from '../store/actions/uploadAction'
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
+import { Card, Container } from '@material-ui/core'
+import { useLightTopShadowStyles } from '@mui-treasury/styles/shadow/lightTop';
+
+const CardLight = (props) => {
+    const styles = useLightTopShadowStyles({
+      inactive: true, // add this line to disable hover effect
+    });
+return <Card classes={styles} >{props.renderui}</Card>;
+  };
+
+
 
 const initialState = {
     step: 1,
@@ -17,7 +31,6 @@ const initialState = {
     password: '',
     rePassword: '',
     avatarImg: null,
-
     firstNameError: '',
     lastNameError: '',
     emailError: '',
@@ -101,15 +114,21 @@ class SignUp extends Component {
 
         switch (step) {
             case 1:
+                const renderui =<div><h1 className="header" style={{marginBottom:'50px',marginTop:'40px'}}>Sign Up</h1><FormSignUp
+                nextStep={this.nextStep}
+                handleChange={this.handleChange}
+                handleChangeAvatar={this.handleChangeAvatar}
+                handleUploadAvatar={this.handleUploadAvatar}
+                values={values}
+                error={error}
+            /></div>
                 return (
-                    <FormSignUp
-                        nextStep={this.nextStep}
-                        handleChange={this.handleChange}
-                        handleChangeAvatar={this.handleChangeAvatar}
-                        handleUploadAvatar={this.handleUploadAvatar}
-                        values={values}
-                        error={error}
-                    />
+                    
+                    <Container style={{ marginTop: "2%", width: "550px",marginBottom:'100px' }}>
+                    
+                                    
+                                    <CardLight renderui ={renderui}/>
+                    </Container>
                 )
             case 2:
                 return (

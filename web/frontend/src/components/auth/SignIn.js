@@ -2,11 +2,14 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { signInEmailPassword, signInGmail, fogotPassword } from '../store/actions/authActions'
 import { Redirect } from 'react-router-dom'
-import { Container, NoSsr, LinearProgress, withStyles } from '@material-ui/core'
+import { Container, NoSsr, LinearProgress, withStyles ,Card } from '@material-ui/core'
 import Button from '@material-ui/core/Button';
 import GoogleButton from 'react-google-button'
 import StyledButton from '../layout/StyledButton'
 import "./style.css"
+import { useRoundInputBaseStyles } from '@mui-treasury/styles/inputBase/round';
+import InputBase from '@material-ui/core/InputBase';
+import { useLightTopShadowStyles } from '@mui-treasury/styles/shadow/lightTop';
 const ColorLinearProgress = withStyles({
     colorPrimary: {
         background: '#ffff'
@@ -15,6 +18,30 @@ const ColorLinearProgress = withStyles({
         background: "linear-gradient(45deg, #fe6b8b 30%, #ff8e53 90%)"
     }
 })(LinearProgress);
+
+
+const CardLight = (props) => {
+    const styles = useLightTopShadowStyles({
+      inactive: true, // add this line to disable hover effect
+    });
+return <Card classes={styles} >{props.renderui}</Card>;
+  };
+
+
+
+
+const InputSign =(props)=>{
+
+    const styles = useRoundInputBaseStyles();
+
+  return (
+
+    <InputBase style={{marginBottom:'10px'}} type={props.type} classes={styles} placeholder={props.placeholder} onChange={props.onChange} id={props.id} defaultValue={props.defaultValue}/>
+);
+  }
+
+
+
 const initialState = {
     email: '',
     password: '',
@@ -102,8 +129,9 @@ class SignIn extends Component {
         return (
             <div className="base-container">
                 <Container style={{ marginTop: "2%", width: "500px" }}>
-                    <form className="white auth" onSubmit={this.handleSubmit} style={{ padding: "2%" }}>
-                        <div className="header">Login</div>
+                <CardLight renderui =
+                   { <form className="white auth" onSubmit={this.handleSubmit} style={{ padding: "2%" }}>
+                        <h1 className="header">Login</h1>
                         <div className="image">
                             <img src="handshake.png" alt="header image"></img>
                         </div>
@@ -159,7 +187,7 @@ class SignIn extends Component {
                                     <GoogleButton type="light" onClick={this.handleSignInGmail}/>
                                 </NoSsr>
                             </div>
-                    </form>
+                    </form>}/>
                 </Container>
             </div>
         )

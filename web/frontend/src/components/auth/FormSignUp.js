@@ -1,7 +1,40 @@
 import React, { Component } from 'react'
 import { Container, NoSsr } from '@material-ui/core'
-import StyledButton from '../layout/StyledButton'
+import Button from '../layout/Button';
 import "./style.css"
+import { useRoundInputBaseStyles } from '@mui-treasury/styles/inputBase/round';
+import InputBase from '@material-ui/core/InputBase';
+
+
+
+const InputSign =(props)=>{
+
+    const styles = useRoundInputBaseStyles();
+
+  return (
+
+    <InputBase style={{marginTop:'8px',marginBottom:'10px'}} type={props.type} classes={styles} placeholder={props.placeholder} onChange={props.onChange} id={props.id} defaultValue={props.defaultValue}/>
+);
+
+
+
+
+
+
+
+
+    
+}
+
+
+
+
+
+
+
+
+
+
 
 const initialState = {
     firstNameError:'',
@@ -69,33 +102,33 @@ class FormSignUp extends Component {
         console.log(this.state)
         return (
             <div className="base-container">
-                <Container style={{ marginTop: "2%", width: "500px" }}>
+                
                     <form className="white auth"
                         // onSubmit={this.handleSubmit} 
                         style={{ padding: "2%" }}>
-                        <div className="header">Sign Up</div>
-                        <div className="image">
+            
+                        {/* <div className="image">
                             <img src="handshake.png"></img>
-                        </div>
+                        </div> */}
                         <div className="form" style={{ textAlign: 'left', alignSelf: 'stretch' }}>
                             <div className="form-group">
                             <label htmlFor="firstName">First name</label>
                                 <div className="input-field">                                   
-                                    <input type="text" id='firstName' placeholder="Enter your first name" onChange={handleChange('firstName')} defaultValue={values.firstName} />
+                                    <InputSign type="text" id='firstName' placeholder="Enter your first name" onChange={handleChange('firstName')} defaultValue={values.firstName}  />
                                     <div style={{ fontSize: 11, color: "red" }}> {this.state.firstNameError} </div>
                                 </div>
                             </div>
                             <div className="form-group">
                             <label htmlFor="lastName">Last Name</label>
                                 <div className="input-field">
-                                    <input type="text" id='lastName' placeholder="Enter your last name" onChange={handleChange('lastName')} defaultValue={values.lastName} />
+                                    <InputSign type="text" id='lastName' placeholder="Enter your last name" onChange={handleChange('lastName')} defaultValue={values.lastName} />
                                     <div style={{ fontSize: 11, color: "red" }}> {this.state.lastNameError} </div>
                                 </div>
                             </div>
                             <div className="form-group">
                             <label htmlFor="email">Email</label>
                                 <div className="input-field">
-                                    <input type="email" id='email' placeholder="Enter your email" onChange={handleChange('email')} defaultValue={values.email} />
+                                    <InputSign type="email" id='email' placeholder="Enter your email" onChange={handleChange('email')} defaultValue={values.email} />
                                     <div style={{ fontSize: 11, color: "red" }}> {this.state.emailError} </div>
                                 </div>
                                 
@@ -103,31 +136,43 @@ class FormSignUp extends Component {
                             <div className="form-group">
                             <label htmlFor="password">Password</label>
                                 <div className="input-field">
-                                    <input type="password" id='password' placeholder="Enter your password" onChange={handleChange('password')} defaultValue={values.password} />
+                                    <InputSign type="password" id='password' placeholder="Enter your password" onChange={handleChange('password')} defaultValue={values.password} />
                                     <div style={{ fontSize: 11, color: "red" }}> {this.state.passwordError} </div>
                                 </div>
                             </div>
                             <div className="form-group">
                             <label htmlFor="rePassword">Re-enter Password</label>
                                 <div className="input-field">
-                                    <input type="password" id='rePassword' placeholder="Re-enter your password" onChange={handleChange('rePassword')} defaultValue={values.rePassword} />
+                                    <InputSign type="password" id='rePassword' placeholder="Re-enter your password" onChange={handleChange('rePassword')} defaultValue={values.rePassword} />
                                     <div style={{ fontSize: 11, color: "red" }}> {this.state.rePasswordError} </div>
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="image" >Avatar</label>
+                                <label htmlFor="image" style={{marginBottom:'20px'}} >Avatar</label>
                                 <br />
                                 <input
                                     defaultValue={values.image}
                                     onChange={handleChangeAvatar}
                                     type="file"
                                     id='avatar'
+                                    
+                                    style={{marginBottom:'50px',display:'none'}}
                                 />
+                                 <label htmlFor="avatar">
+        <Button style={{marginBottom:'25px',marginTop:'5px', marginLeft:'21%'}} variant="contained" color="primary" component="span">
+          Upload
+        </Button>
+      </label>
+
+
+
                                 <div style={{ fontSize: 11, color: "red" }}> {this.state.avatarImgError} </div>
                             </div>
                             <div className="input-field" style={{ textAlign: 'center'}}>
                                 <NoSsr>
-                                    <StyledButton onClick={this.continue}>Continue</StyledButton>
+                                    <Button color="secondary"
+                    size="large"
+                    variant="contained" onClick={this.continue}>Continue</Button>
                                 </NoSsr>
                                 <div className="center red-text">
                                     {this.state.authError ? <p>{this.state.authError}</p> : null}
@@ -135,7 +180,7 @@ class FormSignUp extends Component {
                             </div>
                         </div>
                     </form>
-                </Container>
+       
             </div>
         )
     }
