@@ -15,7 +15,9 @@ known_face_names = []
 def update_local_image_folder():
     user_list = api.get_user_images()
     image_path = os.path.join(cwd, 'Face_Images')
+    print(user_list)
     for id in user_list:
+        
         if not os.path.exists(os.path.join(image_path, id + '.jpg')):
             url = user_list[id]['Avatar']
             urllib.request.urlretrieve(url, os.path.join(image_path, id + '.jpg'))
@@ -117,6 +119,8 @@ def facial_authentication():
 
 
 def decode (data):
+    if os.path.exists(os.path.join(cwd, 'check_faces/checkauth.jpg')):
+        os.remove(os.path.join(cwd, 'check_faces/checkauth.jpg'))
     data_b = bytes.fromhex(data) 
     data_encode = np.array(data_b)
     str_encode = data_encode.tostring()
@@ -129,6 +133,7 @@ def fr_wrapper(data):
     global known_face_encodings, known_face_names
     decode(data)
     update_local_image_folder()
+    
     facial_encode()
     user_id = facial_authentication()
     known_face_encodings = []

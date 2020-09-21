@@ -5,7 +5,7 @@ import FirebaseApi as api
 import Facial_Authen as fauth
 
 SERVER = ''
-PORT = 6700
+PORT = 6701
 ADDR = (SERVER, PORT)
 HEADER = 64
 FORMAT = 'utf-8'
@@ -23,14 +23,21 @@ def handle_client(conn, addr):
         msg_length = conn.recv(HEADER).decode(FORMAT)
         if msg_length:
             msg_length = int(msg_length)
-            msg = conn.recv(msg_length).decode(FORMAT)
-            print(msg)
+            msg = recv_all(conn, msg_length).decode(FORMAT)
             msg = msg.split(', ', 1)
             if msg[0] == DISCONNECT_MESSAGE:
                 connected = False
             return_msg_to_client(authenticate(msg[0], msg[1]))
     conn.close()
         
+def recv_all(conn, msg_length):
+    data = bytearray()
+    while len(data) < msg_length:
+        package = conn.recv(msg_length - len(data))
+        if not package:
+            return None
+        data.extend(package)
+    return data
 
 def return_msg_to_client(conn, return_msg):
     return_msg = return_msg.encode(FORMAT)
