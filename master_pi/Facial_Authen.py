@@ -16,5 +16,3 @@ def update_local_image_folder():
         if not os.path.exists(os.path.join(image_path, id + '.jpg')):
             url = user_list[id]['Avatar']
             urllib.request.urlretrieve(url, os.path.join(image_path, id + '.jpg'))
-
-update_local_image_folder()
