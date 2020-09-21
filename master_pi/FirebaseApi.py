@@ -9,8 +9,12 @@ users_collection = db.collection('users')
 issues_collection = db.collection('issues')
 rental_collection = db.collection('rental')
 
-# def get_user_by_id(uid):
-#
+def get_engineer_by_id(uid):
+    try:
+        engineer = users_collection.document(uid).get()
+        return engineer.to_dict()
+    except Exception as e:
+        print(e)
 
 def get_user_images():
     list_of_user = {}
@@ -25,6 +29,18 @@ def get_user_images():
         return list_of_user
     except Exception as e:
         print(e)
+
+def get_car_detail(car_id):
+    active_issues = []
+    try:
+        issues = issues_collection.where('Car.id', '==', car_id).get()
+        for issue in issues:
+            if issue.to_dict()['Resolve'] != 'true':
+                active_issues.append(issue.to_dict())
+        return active_issues
+    except Exception as e:
+        print(e)
+
 
 def get_car(car_id):
     """
