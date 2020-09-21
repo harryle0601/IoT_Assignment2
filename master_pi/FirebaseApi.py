@@ -9,6 +9,9 @@ users_collection = db.collection('users')
 issues_collection = db.collection('issues')
 rental_collection = db.collection('rental')
 
+# def get_user_by_id(uid):
+#
+
 def get_user_images():
     list_of_user = {}
     try:
