@@ -28,6 +28,7 @@ def get_engineer_by_mac(mac):
 
 def get_user_images():
     list_of_user = {}
+    
     try:
         users = users_collection.get()
         for user in users:
@@ -35,7 +36,6 @@ def get_user_images():
             user = user.to_dict()
             if 'Avatar' in user:
                 list_of_user[id] = user
-        print(list_of_user)
         return list_of_user
     except Exception as e:
         print(e)

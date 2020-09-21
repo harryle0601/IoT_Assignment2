@@ -5,7 +5,7 @@ import FirebaseApi as api
 import Facial_Authen as fauth
 
 SERVER = ''
-PORT = 6701
+PORT = 6704
 ADDR = (SERVER, PORT)
 HEADER = 64
 FORMAT = 'utf-8'

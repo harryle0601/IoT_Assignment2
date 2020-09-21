@@ -15,7 +15,7 @@ known_face_names = []
 def update_local_image_folder():
     user_list = api.get_user_images()
     image_path = os.path.join(cwd, 'Face_Images')
-    print(user_list)
+
     for id in user_list:
         
         if not os.path.exists(os.path.join(image_path, id + '.jpg')):
@@ -29,26 +29,24 @@ def facial_encode():
     dirname = os.path.dirname(__file__)
     path = os.path.join(cwd, 'Face_Images')
     # make an array of all the saved jpg files' paths
-    list_of_files = [f for f in glob.glob(path+'*.jpg')]
+    list_of_files = [f for f in glob.glob('./Face_Images/*.jpg')]
     # find number of known faces
     number_files = len(list_of_files)
 
     names = list_of_files.copy()
-    print(names)
 
     for i in range(number_files):
-        globals()['image_{}'.format(i)] = face_recognition.load_image_file(
-            list_of_files[i])
-        globals()['image_encoding_{}'.format(i)] = face_recognition.face_encodings(
-            globals()['image_{}'.format(i)])[0]
-        known_face_encodings.append(globals()['image_encoding_{}'.format(i)])
+        globals()['image_{}'.format(i)] = face_recognition.load_image_file(list_of_files[i])
+        encode_img = face_recognition.face_encodings(globals()['image_{}'.format(i)])
+        
+        if len(encode_img) != 0:
+            globals()['image_encoding_{}'.format(i)] = encode_img[0]
+            known_face_encodings.append(globals()['image_encoding_{}'.format(i)])
 
         # Create array of known names
-        names[i] = names[i].replace(str(os.path.join(cwd, 'Face_Images')), "")
+        names[i] = names[i].replace(os.path.join(cwd, 'Face_Images'), "")
         names[i] = names[i].replace(".jpg", "")
         known_face_names.append(names[i])
-
-    print(names)
 
 
 def facial_authentication():
@@ -62,11 +60,11 @@ def facial_authentication():
     while True:
         global known_face_names, known_face_encodings
         # Grab a single frame of video
-        ret, frame = cv2.imread("./check_faces/checkauth.jpg")
-
+        frame = cv2.imread(os.path.join(cwd, 'check_faces/checkauth.jpg'))
+        
         # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
         rgb_small_frame = frame[:, :, ::-1]
-
+        
         # Only process every other frame of video to save time
         if process_this_frame:
             # Find all the faces and face encodings in the current frame of video
@@ -113,9 +111,10 @@ def facial_authentication():
 
         # Hit 'q' on the keyboard to quit!
         if name != "unknown":
-            break
+            name = name.split('/')
+            return name[2]
 
-    return name
+    
 
 
 def decode (data):
@@ -133,7 +132,6 @@ def fr_wrapper(data):
     global known_face_encodings, known_face_names
     decode(data)
     update_local_image_folder()
-    
     facial_encode()
     user_id = facial_authentication()
     known_face_encodings = []
