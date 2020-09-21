@@ -88,7 +88,7 @@ def decode (data):
     str_encode = data_encode.tostring()
     nparr = np.frombuffer(str_encode, np.uint8)
     img_decode = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    cv2.imwrite("./haha.jpg", img_decode)
+    cv2.imwrite("./checkauth.jpg", img_decode)
 
 ######################### - - Usage - - ##############################
 

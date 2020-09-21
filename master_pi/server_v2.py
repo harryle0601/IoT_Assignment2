@@ -1,7 +1,10 @@
 import socket
 import threading
-import master_pi.Firebase_authen as email_auth
-import master_pi.FirebaseApi as api
+import Firebase_authen as email_auth
+import FirebaseApi as api
+import Facial_Authen as FAuth
+import numpy as np
+import cv2
 
 SERVER = ''
 PORT = 6700
@@ -71,3 +74,4 @@ def qr_auth(data):
 
 print('[STARTING] server is starting...')
 start()
+
