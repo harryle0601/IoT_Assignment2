@@ -43,6 +43,8 @@ def start():
 def authenticate(command, data):
     if command == 'UP':
         return email_pass_auth(data)
+    elif command == 'QR':
+        return qr_auth(data)
 
 def email_pass_auth(data):
     data = data.split(', ')
