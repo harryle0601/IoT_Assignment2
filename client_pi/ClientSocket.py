@@ -1,6 +1,6 @@
 import socket
 
-SERVER = '192.168.1.245'
+SERVER = '192.168.1.246'
 PORT = 6700
 HEADER = 64
 FORMAT = 'utf-8'
