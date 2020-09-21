@@ -3,9 +3,9 @@ import cv2
 import numpy as np
 import os
 import glob
-import bluetooth
+# import bluetooth
 import sys
-import pyzbar.pyzbar as pyzbar
+# import pyzbar.pyzbar as pyzbar
 import getpass
 
 

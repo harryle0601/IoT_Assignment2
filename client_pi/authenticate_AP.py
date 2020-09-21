@@ -67,7 +67,7 @@ def take_picture():
 
         # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
         rgb_small_frame = small_frame[:, :, ::-1]
-
+       
         # Only process every other frame of video to save time
         if process_this_frame:
             # Find all the faces and face encodings in the current frame of video
@@ -75,7 +75,7 @@ def take_picture():
             if bool(face_locations):
                 byte_im = cv2.imencode(".jpg",rgb_small_frame)[1]
                 byte_im = byte_im.tobytes()
-                return 'FR, ' + byte_im 
+                return 'FR, ' + str(byte_im.hex())
             else:
                 print ("Please move your face closer")
             
@@ -88,15 +88,16 @@ def decode (data):
     str_encode = data_encode.tostring()
     nparr = np.frombuffer(str_encode, np.uint8)
     img_decode = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    cv2.imwrite("./haha.jpg", img_decode)
+    cv2.imwrite("./checkauth.jpg", img_decode)
 
 ######################### - - Usage - - ##############################
 
 def user_authentication():
     opt = ''
-    while opt != 1 and opt != 2:
+    while opt != "1" and opt != "2":
         opt = input("Please choose an unlock method \n 1.Facial Recognition \n 2.Username and Password \n")
     if (opt == "1"):
+       
         auth_data = take_picture()
     else:
         auth_data = Uname_pass()
@@ -105,7 +106,7 @@ def user_authentication():
 
 def engineer_authentication():
     opt = ''
-    while opt != 1 and opt != 2:
+    while opt != "1" and opt != "2":
         opt = input("Please choose an unlock method \n 1.QR Scan \n 2.Bluetooth Scan \n")
     if (opt == "1"):
         auth_data = QR_authentication()

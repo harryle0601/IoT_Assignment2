@@ -21,7 +21,7 @@ const data = [
   },
   {
     id: 2,
-    title: 'Air Max',
+    title: 'Featuring',
     subtitle: 'Maserati',
     image:
       // eslint-disable-next-line max-len
@@ -29,11 +29,11 @@ const data = [
   },
   {
     id: 3,
-    title: 'Air Max',
+    title: 'Featuring',
     subtitle: 'Maserati',
     image:
       // eslint-disable-next-line max-len
-      'https://png2.cleanpng.com/sh/faae3c82bd5994f2634e0a50e86b5024/L0KzQYm3UsAzN6J1fZH0aYP2gLBuTgJwdJ14ReR4eXPoPbjvjCN1NZRmip97b3zvg375jClkbV51gNN3dHBwPcP2jPx0NaN0ReR4bHz2PcP2mfNmNZhthAV9LXLvcbTyTfNiel46eak9OUS5cYq5g8dkOl89UKcEOEizRYK8Ucc2QGo7SaIBMEG1PsH1h5==/kisspng-rolls-royce-ghost-car-rolls-royce-phantom-rolls-ro-rolls-royce-ghost-black-car-5a74946a92c7c2.8859880515175896106012.png',
+      '/rr.png',
   },
 ];
 
