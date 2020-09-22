@@ -14,7 +14,7 @@ def main_wrapper():
     opt = ''
     command = ''
     while opt != "1" and opt != "2" and opt != "3":
-        opt = input('Please select usage type:\n1.Customer\n2.Engineer\n3.Change car ID')
+        opt = input('Please select usage type:\n1.Customer\n2.Engineer\n3.Change car ID\n')
     if opt == "1":
         command = ap.user_authentication()
     elif opt == "2":
