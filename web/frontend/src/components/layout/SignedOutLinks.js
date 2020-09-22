@@ -8,12 +8,12 @@ const SignedOutLinks = () => {
             <Grid container spacing={3}>
                 <Grid item xs={6}>
                     <NavLink to='/signup'>
-                        <Button>Signup</Button>
+                        <Button style={{color: "white"}}>Signup</Button>
                     </NavLink>
                 </Grid>
                 <Grid item xs={6}>
                     <NavLink to='/signin'>
-                        <Button>Login</Button>
+                        <Button style={{color: "white"}}>Login</Button>
                     </NavLink>
                 </Grid></Grid>
         </div>
