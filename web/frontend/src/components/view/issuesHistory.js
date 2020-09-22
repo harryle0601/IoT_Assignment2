@@ -1,14 +1,14 @@
 import { connect } from 'react-redux'
 import React from "react";
 import {
-    Grid, Card, CardContent, Table, TableHead, TableBody, TableRow, TableCell,
+    Grid, Card, CardContent, Table, TableHead, TableBody, TableRow, TableCell, Dialog,
     FormControlLabel, Typography, Box, TableContainer, IconButton, Checkbox, Button
 } from '@material-ui/core';
 import { fade, withStyles } from '@material-ui/core/styles'
-import EditIcon from '@material-ui/icons/Edit'
 import CheckIcon from '@material-ui/icons/Check'
 import DateTimePicker from 'react-datetime-picker';
 import { resolveIssue } from "../store/actions/issueActions"
+import MapDialog from "../dialog/mapDialog"
 import { filteredList, sortedByCreateDate } from '../utils/IssueFilter'
 
 const useStyles = theme => ({
@@ -103,7 +103,7 @@ class IssueHistory extends React.Component {
         rental['Resolved'] = true
         this.props.resolveIssue(rental)
     }
-
+    
     handleAvailableChange(event) {
         this.setState({
             status: event.target.checked
@@ -190,12 +190,15 @@ class IssueHistory extends React.Component {
                                                                             <Typography variant='subtitle2'><Box>{r.Car.Seats + " seats " + r.Car.Color}</Box></Typography>
                                                                         </Grid>
                                                                     </Grid>
+                                                                    <MapDialog></MapDialog>
                                                                 </TableCell>
                                                                 <TableCell align='left'><Box>{r.Summary}</Box></TableCell>
                                                                 <TableCell align='left'>{r.ReportDate.toDate().toLocaleString()}</TableCell>
-                                                                {currentUser.Role === "Admin" 
-                                                                    ? <TableCell align='left'>{r.Resolved ? "Resolved" : "Not Resolve"} </TableCell>
-                                                                    : <TableCell>{r.Resolved ? "Resolved" : <IconButton onClick={e => this.handleResolved(e, r)}><CheckIcon />Mark as Resolved</IconButton>}</TableCell>}
+                                                                {
+                                                                    currentUser.Role === "Admin"
+                                                                        ? <TableCell align='left'>{r.Resolved ? "Resolved" : "Not Resolve"} </TableCell>
+                                                                        : <TableCell>{r.Resolved ? "Resolved" : <IconButton onClick={e => this.handleResolved(e, r)}><CheckIcon />Mark as Resolved</IconButton>}</TableCell>
+                                                                }
                                                             </TableRow>
                                                         );
                                                     })}
@@ -208,7 +211,7 @@ class IssueHistory extends React.Component {
                         </div>
 
                     </Grid>
-                </Grid>
+                </Grid >
             );
         }
         return (<div></div>)

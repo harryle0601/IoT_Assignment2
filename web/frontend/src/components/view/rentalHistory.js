@@ -6,7 +6,6 @@ import {
 } from '@material-ui/core';
 import { fade, withStyles } from '@material-ui/core/styles'
 import DateTimePicker from 'react-datetime-picker';
-import EditIcon from '@material-ui/icons/Edit'
 import ClearIcon from '@material-ui/icons/Clear'
 import { returnCar, editRental } from "../store/actions/rentalActions"
 import { filteredList, sortedByRentDate } from '../utils/RentalFilter';

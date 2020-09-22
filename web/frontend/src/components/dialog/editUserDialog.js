@@ -45,6 +45,7 @@ class BookingDialog extends React.Component {
             firstName: '',
             lastName: '',
             phone: '',
+            address: "",
             userImg: '',
             isUploading: false
         }
@@ -83,7 +84,8 @@ class BookingDialog extends React.Component {
     }
 
     componentDidUpdate(prevProp, prevState) {
-        if (this.props.carImg && this.state.isUploading) {
+        console.log("current user", this.props.currentUser)
+        if (this.props.userImg && this.state.isUploading) {
             var avatar = this.props.userImg
             if (avatar === "https://firebasestorage.googleapis.com/v0/b/iotassignment2-d4c67.appspot.com/o/cars%2Fno-image.png?alt=media&token=c82408de-0396-4c2f-b0a3-1cc5fd127215" && this.props.currentUser.Avatar) {
                 avatar = this.props.currentUser.Avatar
@@ -93,10 +95,11 @@ class BookingDialog extends React.Component {
                 Email: this.props.currentUser.Email,
                 FirstName: (this.state.firstName ? this.state.firstName : this.props.currentUser.FirstName),
                 LastName: (this.state.lastName ? this.state.lastName : this.props.currentUser.LastName),
+                Address: (this.state.address ? this.state.address : this.props.currentUser.Address),
                 Phone: (this.state.phone ? this.state.phone : this.props.currentUser.Phone),
                 Avatar: avatar
             }
-            this.props.editProfile(newUser, this.props.auth.uid)
+            this.props.editProfile(newUser, this.props.currentUser.id)
             this.setState({
                 isUploading: false,
                 dialog: false
@@ -139,7 +142,13 @@ class BookingDialog extends React.Component {
                                         <input type="email" id='phone' placeholder="Phone" type="numeric" onChange={this.handleInputChange.bind(this)} defaultValue={currentUser ? currentUser.Phone ? currentUser.Phone : "" : ""} />
                                         <div style={{ fontSize: 11, color: "red" }}> {this.state.phoneError} </div>
                                     </div>
-
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="lastName">Address</label>
+                                    <div className="input-field">
+                                        <input type="text" id='address' placeholder="Address" onChange={this.handleInputChange.bind(this)} defaultValue={currentUser ? currentUser.LastName ? currentUser.LastName : "" : ""} />
+                                        <div style={{ fontSize: 11, color: "red" }}> {this.state.addressError} </div>
+                                    </div>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="image" >Image</label>
@@ -172,9 +181,9 @@ const mapStateToProps = (state) => {
     const url = state.uploadReducer.url ? state.uploadReducer.url : null
     console.log("url", url)
     if (url !== undefined && url !== null) 
-        if (url.path === '/users/') 
+        if (url.path === '/users/' || (url.path === '/users/' && url.url === "https://firebasestorage.googleapis.com/v0/b/iotassignment2-d4c67.appspot.com/o/cars%2Fno-image.png?alt=media&token=c82408de-0396-4c2f-b0a3-1cc5fd127215")) 
             sessionStorage.setItem("userImg", url.url);
-    
+        
     return {
         progress: state.uploadReducer.progress,
         userImg: sessionStorage.getItem("userImg")

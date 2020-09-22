@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "iotfinalgroup11",
     "public": "build",
     "ignore": [
       "firebase.json",

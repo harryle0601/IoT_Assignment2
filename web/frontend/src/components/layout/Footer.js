@@ -6,7 +6,6 @@ import Container from '@material-ui/core/Container';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import FormLabel from '@material-ui/core/FormLabel';
-import Widgets from '@material-ui/icons/Widgets';
 import { ColumnToRow, Row, Item } from '@mui-treasury/components/flex';
 import { NavMenu, NavItem } from '@mui-treasury/components/menu/navigation';
 import {

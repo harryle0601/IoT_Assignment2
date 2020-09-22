@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import React from "react";
 import { fade, withStyles } from '@material-ui/core/styles'
+import { Container } from "@material-ui/core"
 import { Chart } from "react-google-charts";
 import { carStatusPieChart, userGrowth } from '../utils/Statistic'
 
@@ -86,7 +87,7 @@ class ViewStatistics extends React.Component {
         }
     }
     render() {
-        const { auth, classes, cars, currentUser, rental, issues, users } = this.props;
+        const { auth, cars, currentUser, rental, issues, users } = this.props;
         if (!auth.uid) return <Redirect to='/signin' />
         else if (currentUser) {
             if (currentUser.Role === "Engineer") return <Redirect to='/engineer' />
@@ -96,7 +97,7 @@ class ViewStatistics extends React.Component {
             var carStatus = carStatusPieChart(cars)
             console.log('car status', carStatus)
             return (
-                <div>
+                <Container>
                     <Chart
                         chartType="PieChart"
                         loader={<div>Loading Chart</div>}
@@ -120,7 +121,7 @@ class ViewStatistics extends React.Component {
                         }}
                         rootProps={{ 'data-testid': '1' }}
                     />
-                </div>
+                </Container>
             );
         } else return (<div></div>)
     }

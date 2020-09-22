@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import React from "react";
 import { Tabs, Tab } from '@material-ui/core';
+import { Container } from "@material-ui/core"
 import { fade, withStyles } from '@material-ui/core/styles'
 import { TabPanel, a11yProps } from '../layout/Tabs'
 import SearchCar from "../view/searchCar"
@@ -109,7 +110,7 @@ class AdminDashboard extends React.Component {
         }
         if (cars && rental && issues && users) {
             return (
-                <div>
+                <Container>
                     <Tabs
                         orientation="horizontal"
                         value={tab}
@@ -136,7 +137,7 @@ class AdminDashboard extends React.Component {
                             {(props) => <UsersList {...props} users={users} currentUser={currentUser} auth={auth}/>}
                         </TabPanel>
                     </div>
-                </div>
+                </Container>
             );
         }
         return (<div></div>)

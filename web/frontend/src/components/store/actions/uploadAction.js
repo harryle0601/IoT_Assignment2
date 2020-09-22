@@ -7,7 +7,7 @@ export const uploadToStorage = (file) => {
         if (!file.image) 
             dispatch({ type: 'NO_CHANGE_IMAGE' })
         else {
-            const uploadTask = storageRef.ref(`${file.path + file.image.name + token}`).put(file.image);
+            const uploadTask = storageRef.ref(`${file.path + file.image.name}`).put(file.image);
             uploadTask.on('state_changed',
                 (snapshot) => {
                     // progress function ....
@@ -26,6 +26,7 @@ export const uploadToStorage = (file) => {
                         }
                         dispatch({ type: 'UPLOAD_SUCCESS', payload: pay });
                     }).catch(err => {
+                        console.log("error ", err)
                         dispatch({ type: 'UPLOAD_ERROR' }, err);
                     })
                 });

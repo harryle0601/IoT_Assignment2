@@ -1,11 +1,10 @@
 import { connect } from 'react-redux'
 import React from "react";
 import {
-    Grid, Card, CardContent, Table, TableHead, TableBody, TableRow, TableCell, MenuItem, FormHelperText,
-    Container, Typography, Box, TableContainer, FormControl, TextField, InputLabel, Select
+    Grid, Card, CardContent, Table, TableHead, TableBody, TableRow, TableCell, 
+    Container, Typography, Box, TableContainer, TextField, 
 } from '@material-ui/core';
 import { fade, withStyles } from '@material-ui/core/styles'
-import EditIcon from '@material-ui/icons/Edit'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { returnCar, editRental } from "../store/actions/rentalActions"
 import { filteredList } from "../utils/UserFilter"

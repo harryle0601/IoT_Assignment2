@@ -4,8 +4,8 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import React from "react";
 import { fade, withStyles } from '@material-ui/core/styles'
-import { returnCar } from "../store/actions/rentalActions"
 import IssueHistory from "../view/issuesHistory"
+import { Container } from "@material-ui/core"
 
 const useStyles = theme => ({
     search: {
@@ -90,7 +90,7 @@ class EngineerDashboard extends React.Component {
         }
         if (issues) {
             console.log("issues recedived")
-            return <IssueHistory {...this.props} issues={issues} currentUser={currentUser} auth={auth}/>;
+            return <Container><IssueHistory {...this.props} issues={issues} currentUser={currentUser} auth={auth}/></Container>;
         }
         return (<div></div>)
     }
