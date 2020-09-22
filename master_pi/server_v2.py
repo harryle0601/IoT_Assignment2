@@ -5,7 +5,7 @@ import FirebaseApi as api
 import Facial_Authen as fauth
 
 SERVER = ''
-PORT = 6700
+PORT = 6701
 ADDR = (SERVER, PORT)
 HEADER = 64
 FORMAT = 'utf-8'
@@ -33,6 +33,7 @@ def handle_client(conn, addr):
             if msg[0] == DISCONNECT_MESSAGE:
                 connected = False
             result = authenticate(msg[0], msg[1])
+            print(result)
             return_msg_to_client(conn, result)
     conn.close()
         
@@ -123,9 +124,9 @@ def qr_auth(data):
     data = data.split(', ')
     uid = data[0]
     car_id = data[1]
-    result = api.get_user(uid)
+    result = api.get_engineer_by_id(uid)
     if result:
-        return 'FIXING, ' + api.get_car_detail(car_id)
+        return 'FIXING, ' + str(api.get_car_detail(car_id))
     else:
         return 'FAIL, invalid qr code'
 
@@ -138,9 +139,11 @@ def blt_auth(data):
     """
     data = data.split(', ')
     mac_addr_list = data[0]
+    length = len(mac_addr_list)
+    print(length)
     car_id = data[1]
-    for mac in mac_addr_list:
-        result = api.get_engineer_by_mac(mac)
+    for i in range(length):
+        result = api.get_engineer_by_mac(mac_addr_list[i])
         if result:
             return 'FIXING, ' + api.get_car_detail(car_id)
     return 'FAIL, no valid device in range'
