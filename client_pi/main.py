@@ -12,6 +12,7 @@ def main_wrapper():
     """
     global CAR_ID, USAGE_STATUS
     opt = ''
+    command = ''
     while opt != "1" and opt != "2" and opt != "3":
         opt = input('Please select usage type:\n1.Customer\n2.Engineer\n3.Change car ID')
     if opt == "1":
@@ -25,14 +26,15 @@ def main_wrapper():
     """
         Generate a socket request and send request to master pi 
     """
-    command += ', ' + CAR_ID
+    if command != '':
+        command += ', ' + CAR_ID
 
-    f = open("data.txt", "a")
-    f.write(command)
-    return_status, return_data = cs.send_message(command)
-    if return_status != 'FAIL':
-        USAGE_STATUS = return_status
-    print(return_data)
+        f = open("data.txt", "a")
+        f.write(command)
+        return_status, return_data = cs.send_message(command)
+        if return_status != 'FAIL':
+            USAGE_STATUS = return_status
+        print(return_data)
 
 def stop_car_usage():
     """

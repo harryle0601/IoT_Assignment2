@@ -21,3 +21,15 @@ export const setRole = (user, role) => {
         }
     }
 };
+
+export const editProfile = (user, id) => {
+    return (dispatch, getState) => {
+        firebase.firestore().collection('users').doc(id).update({
+            ...user,
+        }).then(() => {
+            dispatch({ type: 'EDIT_PROFILE_SUCCESS' });
+        }).catch(err => {
+            dispatch({ type: 'EDIT_PROFILE_ERROR' }, err);
+        });
+    }
+};

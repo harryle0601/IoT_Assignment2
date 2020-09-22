@@ -1,9 +1,9 @@
 import React from "react";
 import { connect } from 'react-redux'
-import { Button, Dialog, DialogContent, DialogActions, DialogTitle, Grid } from '@material-ui/core';
+import { Button, Dialog, DialogContent, DialogActions, DialogTitle, Grid, MenuItem } from '@material-ui/core';
 import { withStyles } from "@material-ui/core/styles";
-import { addCar, editCar } from "../store/actions/carActions"
 import { uploadToStorage } from '../store/actions/uploadAction'
+import { editProfile } from '../store/actions/userActions'
 
 const useStyles = theme => ({
     container: {
@@ -41,10 +41,11 @@ class BookingDialog extends React.Component {
         super();
         this.state = {
             dialog: false,
-            email: true,
-            phone: undefined,
-            address: undefined,
-            role: undefined,
+            available: "Idle",
+            firstName: '',
+            lastName: '',
+            phone: '',
+            userImg: '',
             isUploading: false
         }
     }
@@ -59,9 +60,10 @@ class BookingDialog extends React.Component {
         console.log(e.target)
         if (e.target.files[0]) {
             const image = e.target.files[0];
-            this.setState({ carImg: image });
+            this.setState({ userImg: image });
         }
     }
+
     handleClickDialog(e) {
         this.setState({ dialog: true })
     }
@@ -73,91 +75,81 @@ class BookingDialog extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault()
         this.props.uploadToStorage({
-            image: this.state.carImg,
-            path: "/users/"
-        })
+            image: this.state.userImg,
+            path: "/users/"})
         this.setState({
-            uploading: true
+            isUploading: true
         })
     }
 
     componentDidUpdate(prevProp, prevState) {
-        console.log("open prevpreisa sate", this.props.car, this.state.uploading)
-        if (this.props.carImg && this.state.uploading && !prevState.uploading) {
-            var carImage = this.props.carImg
-            if (carImage === "https://firebasestorage.googleapis.com/v0/b/iotassignment2-d4c67.appspot.com/o/cars%2Fno-image.png?alt=media&token=c82408de-0396-4c2f-b0a3-1cc5fd127215" && this.props.car.Image) {
-                carImage = this.props.car.Image
+        if (this.props.carImg && this.state.isUploading) {
+            var avatar = this.props.userImg
+            if (avatar === "https://firebasestorage.googleapis.com/v0/b/iotassignment2-d4c67.appspot.com/o/cars%2Fno-image.png?alt=media&token=c82408de-0396-4c2f-b0a3-1cc5fd127215" && this.props.currentUser.Avatar) {
+                avatar = this.props.currentUser.Avatar
             }
 
-            var newCar = {
-                Email: (this.state.email ? this.state.email : this.props.car.Brand),
-                Phone: (this.state.phone ? this.state.phone : this.props.car.Seats),
-                Address: (this.state.address ? this.state.address : this.props.car.Model),
-                Image: carImage
+            var newUser = {
+                Email: this.props.currentUser.Email,
+                FirstName: (this.state.firstName ? this.state.firstName : this.props.currentUser.FirstName),
+                LastName: (this.state.lastName ? this.state.lastName : this.props.currentUser.LastName),
+                Phone: (this.state.phone ? this.state.phone : this.props.currentUser.Phone),
+                Avatar: avatar
             }
-            console.log("readyly printed car", this.props.car.id, newCar)
-            if (this.props.car) this.props.editCar(newCar, this.props.car.id)
-            else this.props.addCar(newCar)
+            this.props.editProfile(newUser, this.props.auth.uid)
             this.setState({
+                isUploading: false,
                 dialog: false
             })
         }
     }
 
     render() {
-        const { car, carImg } = this.props
-        console.log("open edit dialog", car, this.state.uploading)
+        const { currentUser, auth, userImg } = this.props
         return (
             <div>
-                <Button variant="contained" color="secondary" onClick={this.handleClickDialog.bind(this)}>{car ? "Edit car" : "Add new car"}</Button>
+                <MenuItem style={{ color: "black" }} onClick={this.handleClickDialog.bind(this)}><Button variant='outlined'>Edit Profile</Button></MenuItem>
                 <Dialog
                     fullWidth={true}
                     maxWidth={"md"}
                     open={this.state.dialog}
                     onClose={this.handleCloseDialog}
                     aria-labelledby="responsive-dialog-title">
-                    <h4 style={{ margin: '40px' }}>{car ? car.Brand + " " + car.Model : "Add new car"}</h4>
                     <Grid container style={{ margin: '1%', width: 'fit-content', marginLeft: '2%' }}>
                         <form className="white"
                             style={{ padding: "2%" }}>
                             <div className="form" style={{ textAlign: 'left', alignSelf: 'stretch' }}>
                                 <div className="form-group">
-                                    <label htmlFor="firstName">Brand Name</label>
+                                    <label htmlFor="firstName">First Name</label>
                                     <div className="input-field">
-                                        <input type="text" id='brand' placeholder="Brand name" onChange={this.handleInputChange.bind(this)} defaultValue={car ? car.Brand : ""} />
+                                        <input type="text" id='firstName' placeholder="First Name" onChange={this.handleInputChange.bind(this)} defaultValue={currentUser ? currentUser.FirstName ? currentUser.FirstName : "" : ""} />
                                         <div style={{ fontSize: 11, color: "red" }}> {this.state.firstNameError} </div>
                                     </div>
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="lastName">Model name</label>
+                                    <label htmlFor="lastName">Last Name</label>
                                     <div className="input-field">
-                                        <input type="text" id='model' placeholder="Model name" onChange={this.handleInputChange.bind(this)} defaultValue={car ? car.Model : ""} />
+                                        <input type="text" id='lastName' placeholder="Last Name" onChange={this.handleInputChange.bind(this)} defaultValue={currentUser ? currentUser.LastName ? currentUser.LastName : "" : ""} />
                                         <div style={{ fontSize: 11, color: "red" }}> {this.state.lastNameError} </div>
                                     </div>
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="email">Color</label>
+                                    <label htmlFor="email">Phone</label>
                                     <div className="input-field">
-                                        <input type="email" id='color' placeholder="Color" onChange={this.handleInputChange.bind(this)} defaultValue={car ? car.Color : ""} />
-                                        <div style={{ fontSize: 11, color: "red" }}> {this.state.emailError} </div>
+                                        <input type="email" id='phone' placeholder="Phone" type="numeric" onChange={this.handleInputChange.bind(this)} defaultValue={currentUser ? currentUser.Phone ? currentUser.Phone : "" : ""} />
+                                        <div style={{ fontSize: 11, color: "red" }}> {this.state.phoneError} </div>
                                     </div>
+
                                 </div>
-                                <FormControl required className={classes.formControl}>
-                                    <InputLabel id="demo-simple-select-required-label">Age</InputLabel>
-                                    <Select
-                                        labelId="demo-simple-select-required-label"
-                                        id="demo-simple-select-required"
-                                        value={this.state.role}
-                                        onChange={this.handleInputChange.bind(this)}
-                                        className={classes.selectEmpty}
-                                    >
-                                        <MenuItem value={"User"}>User</MenuItem>
-                                        <MenuItem value={"Admin"}>Admin</MenuItem>
-                                        <MenuItem value={"Manager"}>Manager</MenuItem>
-                                        <MenuItem value={"Engineer"}>Engineer</MenuItem>
-                                    </Select>
-                                    <FormHelperText>Required</FormHelperText>
-                                </FormControl>
+                                <div className="form-group">
+                                    <label htmlFor="image" >Image</label>
+                                    <br />
+                                    <input
+                                        onChange={this.handleChangeImage}
+                                        type="file" id='userImg'
+                                    />
+                                    <div style={{ fontSize: 11, color: "red" }}> {this.state.avatarImgError} </div>
+                                </div>
                             </div>
                         </form>
                         <Grid container
@@ -165,8 +157,8 @@ class BookingDialog extends React.Component {
                             <DialogActions>
                                 <Button autoFocus onClick={this.handleCloseDialog.bind(this)} color="primary">Cancel</Button>
                                 <Button onClick={(e) => this.handleSubmit(e)} color="primary" autoFocus>
-                                    {car ? "Apply change" : "Add car"}
-                                </Button>
+                                Apply change
+                            </Button>
                             </DialogActions>
                         </Grid>
                     </Grid>
@@ -179,21 +171,20 @@ class BookingDialog extends React.Component {
 const mapStateToProps = (state) => {
     const url = state.uploadReducer.url ? state.uploadReducer.url : null
     console.log("url", url)
-    if (url !== undefined && url !== null)
-        if (url.path === '/cars/')
-            sessionStorage.setItem("carImg", url.url);
-
+    if (url !== undefined && url !== null) 
+        if (url.path === '/users/') 
+            sessionStorage.setItem("userImg", url.url);
+    
     return {
         progress: state.uploadReducer.progress,
-        carImg: sessionStorage.getItem("carImg")
+        userImg: sessionStorage.getItem("userImg")
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        addCar: (car) => dispatch(addCar(car)),
         uploadToStorage: (file) => dispatch(uploadToStorage(file)),
-        editCar: (car, id) => dispatch(editCar(user, id))
+        editProfile: (user, id) => dispatch(editProfile(user, id))
     }
 }
 

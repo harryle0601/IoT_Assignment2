@@ -3,12 +3,12 @@ import { connect } from 'react-redux'
 import { signInEmailPassword, signInGmail, fogotPassword } from '../store/actions/authActions'
 import { Redirect } from 'react-router-dom'
 import { Container, NoSsr, LinearProgress, withStyles ,Card } from '@material-ui/core'
-import Button from '@material-ui/core/Button';
+import Button from '../layout/Button';
 import GoogleButton from 'react-google-button'
 import StyledButton from '../layout/StyledButton'
 import "./style.css"
-import { useRoundInputBaseStyles } from '@mui-treasury/styles/inputBase/round';
-import InputBase from '@material-ui/core/InputBase';
+import TextField from '@material-ui/core/TextField';
+import { roundTextFieldStylesHook } from '@mui-treasury/styles/textField/round';
 import { useLightTopShadowStyles } from '@mui-treasury/styles/shadow/lightTop';
 const ColorLinearProgress = withStyles({
     colorPrimary: {
@@ -32,11 +32,19 @@ return <Card classes={styles} >{props.renderui}</Card>;
 
 const InputSign =(props)=>{
 
-    const styles = useRoundInputBaseStyles();
+  const inputBaseStyles = roundTextFieldStylesHook.useInputBase();
+  const inputLabelStyles = roundTextFieldStylesHook.useInputLabel();
+  const helperTextStyles = roundTextFieldStylesHook.useHelperText();
 
   return (
+<TextField
+label={props.label}
+         type={props.type} placeholder={props.placeholder} onChange={props.onChange} id={props.id} defaultValue={props.defaultValue}
+        InputLabelProps={{ shrink: true, classes: inputLabelStyles }}
+        InputProps={{ classes: inputBaseStyles, disableUnderline: true }}
+        FormHelperTextProps={{ classes: helperTextStyles }}
+      />
 
-    <InputBase style={{marginBottom:'10px'}} type={props.type} classes={styles} placeholder={props.placeholder} onChange={props.onChange} id={props.id} defaultValue={props.defaultValue}/>
 );
   }
 
@@ -128,23 +136,23 @@ class SignIn extends Component {
         if (auth.uid) return <Redirect to='/user'/>
         return (
             <div className="base-container">
-                <Container style={{ marginTop: "2%", width: "500px" }}>
+                <Container style={{ marginTop: "2%", width: "500px" , marginBottom:'2%'}}>
                 <CardLight renderui =
                    { <form className="white auth" onSubmit={this.handleSubmit} style={{ padding: "2%" }}>
-                        <h1 className="header">Login</h1>
-                        <div className="image">
-                            <img src="handshake.png" alt="header image"></img>
-                        </div>
-                        <div className="form" style={{ textAlign: 'left' }}>
-                            <div className="form-group">
-                                <label htmlFor="email">Email</label>
-                                <input
+                        <h1 style={{marginBottom:'80px'}} >Login</h1>
+                    
+                        <div className="form" style={{ textAlign: 'center',marginBottom:'50px' }}>
+                            <div className="form-group" style={{ marginBottom:'10px' }}>
+                    
+                                <InputSign
                                     required
+                                    label ="Email"
                                     type="email"
                                     id='email'
                                     placeholder='Enter your Email'
                                     value={this.state.email}
                                     onChange={this.handleChange}
+                         
                                 />
                                 <div style={{ fontSize: 11, color: "red" }}>
                                     {this.state.emailError}
@@ -152,8 +160,9 @@ class SignIn extends Component {
                             </div>
                             {this.state.isForget === false ?
                                 <div className="form-group">
-                                    <label htmlFor="password">Password</label>
-                                    <input
+                           
+                                    <InputSign
+                                    label="Password"
                                         type="password"
                                         id='password'
                                         placeholder='Enter your password'
@@ -163,14 +172,23 @@ class SignIn extends Component {
                                     <div style={{ fontSize: 11, color: "red" }}>
                                         {this.state.passwordError}
                                     </div>
-                                    <Button color="linear-gradient(45deg, #fe6b8b 30%, #ff8e53 90%)"
+                                    <Button color='secondary'
                                     onClick={this.handleForget}>Forget Password?</Button>
-                                </div> : <Button onClick={this.handleForget}>Back</Button>}
+                                </div> : <Button color="secondary"
+                    size="large"
+                    variant="contained" onClick={this.handleForget}>Back</Button>}
                         </div>
                         {this.state.isForget === false ?
                             <div className="input-field">
+                                <div className="input-field" style={{display:"flex", justifyContent:"center",alignItems:"center" ,marginBottom:'50px'}}>
                                 <NoSsr>
-                                    <StyledButton onClick={this.handleSubmit}>Login</StyledButton>
+                                    <GoogleButton type="light" onClick={this.handleSignInGmail}/>
+                                </NoSsr>
+                            </div>
+                                <NoSsr>
+                                    <Button color="secondary"
+                    size="large"
+                    variant="contained" style={{marginBottom:'40px'}} onClick={this.handleSubmit}>Login</Button>
                                 </NoSsr>                 
                                 {this.state.logging ? <ColorLinearProgress style={{ marginBottom: "2%", marginTop: "2%", padding: "5px" }} /> : null}
                                 <div className="center red-text">
@@ -179,14 +197,12 @@ class SignIn extends Component {
                             </div> :
                             <div className="input-field">
                                 <NoSsr>
-                                    <StyledButton onClick={this.handleResetPassword}>Confirm</StyledButton>
+                                    <Button color="secondary"
+                    size="large"
+                    variant="contained" onClick={this.handleResetPassword}>Confirm</Button>
                                 </NoSsr>
                             </div>}
-                            <div className="input-field" style={{display:"flex", justifyContent:"center",alignItems:"center"}}>
-                                <NoSsr>
-                                    <GoogleButton type="light" onClick={this.handleSignInGmail}/>
-                                </NoSsr>
-                            </div>
+                            
                     </form>}/>
                 </Container>
             </div>

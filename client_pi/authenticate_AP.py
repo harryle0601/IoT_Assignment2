@@ -51,7 +51,7 @@ def QR_authentication():
         if key != "unknown":
             break
     
-    return 'QR, ' + key
+    return 'QR, ' + str(key)
             
     
 ######################### - - Username Password - - ##############################
