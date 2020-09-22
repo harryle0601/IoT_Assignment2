@@ -1,7 +1,6 @@
 {
   "hosting": {
     "public": "build",
-    "site": "iota2gr11",
     "ignore": [
       "firebase.json",
       "**/.*",
