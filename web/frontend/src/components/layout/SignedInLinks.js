@@ -2,16 +2,14 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { signOut } from '../store/actions/authActions'
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import Grid from '@material-ui/core/Grid';
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
-import Badge from '@material-ui/core/Badge';
 import { useSizedIconButtonStyles } from '@mui-treasury/styles/iconButton/sized';
 import { Avatar } from 'material-ui'
-import moment from 'moment'
+import EditUserProfile from '../dialog/editUserDialog'
 
 export function UserMenu(props) {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -41,6 +39,7 @@ export function UserMenu(props) {
                 <NavLink to={`/profile/${props.props.uid}`} style={{ color: "black" }} >
                     <MenuItem onClick={handleClose}>My Profile</MenuItem>
                 </NavLink>
+                <EditUserProfile currentUser={props.currentUser} auth={auth}></EditUserProfile>
                 <MenuItem style={{ color: "black" }} onClick={(e) => props.handleLogOut(e)}><Button variant='outlined'>Sign Out</Button></MenuItem>
             </Menu>
         </div>
@@ -61,6 +60,9 @@ const SignedInLinks = (props) => {
         props.signOut()
         sessionStorage.removeItem('logo')
         window.location.reload()
+    }
+    const handleEditProfile = (e) => {
+        return 
     }
     return (
         <div>

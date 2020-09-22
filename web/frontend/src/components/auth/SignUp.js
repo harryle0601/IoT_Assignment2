@@ -15,12 +15,10 @@ import { useLightTopShadowStyles } from '@mui-treasury/styles/shadow/lightTop';
 
 const CardLight = (props) => {
     const styles = useLightTopShadowStyles({
-      inactive: true, // add this line to disable hover effect
+        inactive: true, // add this line to disable hover effect
     });
-return <Card classes={styles} >{props.renderui}</Card>;
-  };
-
-
+    return <Card classes={styles} >{props.renderui}</Card>;
+};
 
 const initialState = {
     step: 1,
@@ -107,24 +105,24 @@ class SignUp extends Component {
         const { step, firstName, lastName, email, password, rePassword, image, url, progress } = this.state;
         const { auth, authError, currentUser, avatar } = this.props;
         const values = { firstName, lastName, email, password, rePassword, image, url, progress }
-        const { firstNameError, lastNameError, emailError, passwordError, rePasswordError, avatarImgError  } = this.state
+        const { firstNameError, lastNameError, emailError, passwordError, rePasswordError, avatarImgError } = this.state
         const error = { firstNameError, lastNameError, emailError, passwordError, rePasswordError, avatarImgError }
 
-        if (auth.uid) return <Redirect to='/user'/>
+        if (auth.uid) return <Redirect to='/user' />
 
         switch (step) {
             case 1:
-                const renderui =<div><h1 className="header" style={{marginBottom:'50px',marginTop:'40px'}}>Sign Up</h1><FormSignUp
-                nextStep={this.nextStep}
-                handleChange={this.handleChange}
-                handleChangeAvatar={this.handleChangeAvatar}
-                handleUploadAvatar={this.handleUploadAvatar}
-                values={values}
-                error={error}
-            /></div>
+                const renderui = <div><h1 className="header" style={{ marginBottom: '50px', marginTop: '40px' }}>Sign Up</h1><FormSignUp
+                    nextStep={this.nextStep}
+                    handleChange={this.handleChange}
+                    handleChangeAvatar={this.handleChangeAvatar}
+                    handleUploadAvatar={this.handleUploadAvatar}
+                    values={values}
+                    error={error}
+                /></div>
                 return (
                     
-                    <Container style={{ marginTop: "2%", width: "550px",marginBottom:'100px' }}>
+                    <Container style={{ marginTop: "2%", width: "500px",marginBottom:'100px' }}>
                     
                                     
                                     <CardLight renderui ={renderui}/>
@@ -132,20 +130,30 @@ class SignUp extends Component {
                 )
             case 2:
                 return (
-                    <Confirm
+                    <Container style={{ marginTop: "2%", width: "500px",marginBottom:'100px' }}>
+                    
+                                    
+                                    <CardLight renderui ={<Confirm
                         nextStep={this.nextStep}
                         prevStep={this.prevStep}
                         handleChange={this.handleChange}
                         handleSubmit={this.handleSubmit}
                         values={values}
                         error={error}
-                    />
+                    /> }/>
+                   
+                    </Container>
                 )
             case 3:
                 return (
-                    <Success
+                    <Container style={{ marginTop: "2%", width: "500px",marginBottom:'100px' }}>
+                    
+                                    
+                    <CardLight renderui ={ <Success
                         prevStep={this.prevStep}
-                    />
+                    />}/>
+                   
+                    </Container>
                 )
         }
     }
@@ -153,10 +161,10 @@ class SignUp extends Component {
 
 const mapStateToProps = (state, ownProps) => {
     const url = state.uploadReducer.url ? state.uploadReducer.url : null
-    if (url !== undefined && url !== null) 
-        if (url.path === '/users/') 
+    if (url !== undefined && url !== null)
+        if (url.path === '/users/')
             sessionStorage.setItem("userAvatar", url.url);
-    
+
     return {
         auth: state.firebase.auth,
         authError: state.auth.authError,

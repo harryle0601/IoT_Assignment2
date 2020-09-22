@@ -23,15 +23,13 @@ def bluetooth_authentication():
 
     nearby_devices = bluetooth.discover_devices(
             duration=8, lookup_names=True, flush_cache=True, lookup_class=False)
+    list_device = []
+    for dev, name in nearby_devices:
+        list_device.append(dev)
+    print('BLT, ' + str(list_device))
 
-    print("found %d devices" % len(nearby_devices))
+    return 'BLT, ' + str(list_device)
 
-    return 'BLT' + str(nearby_devices)
-    # for addr, name in nearby_devices:
-    #     try:
-    #         return addr
-    #     except UnicodeEncodeError:
-    #         print("  %s - %s" % (addr, name.encode('utf-8', 'replace')))
 
 ######################### - - QR Scanner - - ##############################
 
@@ -46,12 +44,10 @@ def QR_authentication():
         key ="unknown"
         decodedObjects = pyzbar.decode(frame)
         for obj in decodedObjects:
-            print("Data", obj.data)
-            key = obj.data
+            key = obj.data.decode('utf-8')
         if key != "unknown":
             break
-    
-    return 'QR, ' + key
+    return 'QR, ' + str(key)
             
     
 ######################### - - Username Password - - ##############################

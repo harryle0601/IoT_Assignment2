@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Container, NoSsr, LinearProgress, withStyles } from '@material-ui/core'
-import StyledButton from '../layout/StyledButton'
+import Button from '../layout/Button'
 import "./style.css"
 
 export class Success extends Component {
@@ -16,7 +16,7 @@ export class Success extends Component {
                     <form className="white auth" onSubmit={this.handleSubmit} style={{ padding: "2%" }}>
                         <div className="header">Success</div>
                         <div className="image">
-                            <img src="handshake.png"></img>
+                            <img src="/check.png"></img>
                         </div>
                         <div className="form">
                             <div className="form-group">
@@ -25,7 +25,9 @@ export class Success extends Component {
                         </div>
                         <div className="input-field">
                             <NoSsr>
-                                <StyledButton href="/signin">Done</StyledButton>
+                                <Button color="secondary"
+                    size="large"
+                    variant="contained" href="/signin">Done</Button>
                             </NoSsr>
                         </div>
                     </form>

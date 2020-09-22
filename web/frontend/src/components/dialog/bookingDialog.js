@@ -4,6 +4,7 @@ import { Button, Dialog, DialogContent, DialogActions, DialogTitle, Grid } from 
 import { withStyles } from "@material-ui/core/styles";
 import { addRental } from "../store/actions/rentalActions";
 import {  KeyboardDateTimePicker } from "@material-ui/pickers";
+
 const useStyles = theme => ({
     container: {
         display: 'flex',
@@ -69,7 +70,6 @@ class BookingDialog extends React.Component {
 
     render() {
         const { classes, car, currentUser } = this.props;
-        console.log("booking car", car)
         return (
             <div>
                 {car.Available !== "Idle"
