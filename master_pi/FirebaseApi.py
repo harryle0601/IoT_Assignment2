@@ -32,7 +32,9 @@ def get_engineer_by_mac(mac):
         return : Return a dictionary.
     """
     try:
+        print(mac)
         engineer = users_collection.where('MAC', '==', mac).get()
+        print(engineer.to_dict())
         return engineer.to_dict()
     except Exception as e:
         print(e)

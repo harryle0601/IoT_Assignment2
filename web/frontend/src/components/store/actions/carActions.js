@@ -4,7 +4,6 @@ export const addCar = (car) => {
     return (dispatch, getState) => {
         firebase.firestore().collection('cars').add(car).then(() => {
             dispatch({ type: 'CREATE_CAR_SUCCESS' });
-            window.location.reload()
         }).catch(err => {
             dispatch({ type: 'CREATE_CAR_ERROR' }, err);
         });
